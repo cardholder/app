@@ -70,3 +70,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  fonts:
+    - family: Lobster
+      fonts:
+        - asset: fonts/Lobster-Regular.ttf
+    - family: OpenSans
+      fonts:
+        - asset: fonts/OpenSans-Light.ttf
