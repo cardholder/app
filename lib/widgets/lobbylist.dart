@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class LobbyList extends StatelessWidget {
-  Widget build(BuildContext conext) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CardholderAppBar(),
+      appBar: cardholderappbar(context),
     );
   }
 }
