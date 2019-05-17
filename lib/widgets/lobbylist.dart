@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class LobbyList extends StatelessWidget {
-
-  final List<Lobby> _lobbies = [Lobby('a', 'Skat', 'private', 6, [Player(1, 'name', 'role')])];
+  final List<Lobby> _lobbies = [
+    Lobby('a', 'Skat', 'private', 6, [Player(1, 'name', 'role')])
+  ];
 
   Widget build(BuildContext context) {
     return Scaffold(

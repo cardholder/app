@@ -29,7 +29,7 @@ class Button extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-      )
+      ),
     );
   }
 }

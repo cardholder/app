@@ -1,4 +1,4 @@
-import 'package:cardholder/widgets/button.dart';
+import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +13,17 @@ class Home extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Button(
-                title: 'Lobby suchen',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/lobbylist');
-                }),
-            Button(title: 'Lobby erstellen', onPressed: null),
+              title: 'Lobby suchen',
+              onPressed: () {
+                Navigator.pushNamed(context, '/lobbylist');
+              },
+            ),
+            Button(
+              title: 'Lobby erstellen',
+              onPressed: () {
+                Navigator.pushNamed(context, '/createlobby');
+              },
+            ),
           ],
         ),
       ),

@@ -2,7 +2,6 @@ import 'package:cardholder/types/Lobby.dart';
 import 'package:flutter/material.dart';
 
 class GameCard extends StatelessWidget {
-
   final Lobby _lobby;
 
   GameCard(this._lobby);
@@ -13,8 +12,7 @@ class GameCard extends StatelessWidget {
       elevation: 5,
       margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10))
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Row(
@@ -22,7 +20,7 @@ class GameCard extends StatelessWidget {
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[ 
+              children: <Widget>[
                 Text(
                   _lobby.game,
                   textAlign: TextAlign.left,

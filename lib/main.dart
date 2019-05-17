@@ -1,5 +1,6 @@
 import 'package:cardholder/widgets/home.dart';
 import 'package:cardholder/widgets/lobbylist.dart';
+import 'package:cardholder/widgets/createlobby.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Home(),
         '/lobbylist': (context) => LobbyList(),
+        '/createlobby': (context) => CreateLobby(),
       },
     );
   }
