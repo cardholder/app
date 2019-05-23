@@ -10,10 +10,10 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 class LobbyList extends StatelessWidget {
-  final channel = IOWebSocketChannel.connect("ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/ws/chat/lobby/");
+  final channel = IOWebSocketChannel.connect("ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+  // I/flutter ( 9922): {"lobbies": [{"id": "hAsfh8n", "game": "Durak", "visibility": "private", "max_players": 8, "players": [{"id": 0, "name": "Player 1", "role": "leader"}]}]}
 
   LobbyList() {
-    channel.sink.add('{"message":"Flutter ist toll"}');
     channel.stream.listen((message) {
       print(message);
     });
