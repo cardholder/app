@@ -16,6 +16,8 @@ class Button extends StatelessWidget {
         constraints: BoxConstraints(
           minHeight: 50,
           minWidth: 250,
+          maxHeight: 50,
+          maxWidth: 250,
         ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),

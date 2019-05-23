@@ -1,5 +1,7 @@
 import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/ch_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'ch_button.dart';
@@ -21,16 +23,26 @@ class CreateLobbyState extends State<CreateLobby> {
     Widget body;
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
-      body = Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text('Kartenspiel:'),
-          Card(
-            margin: EdgeInsets.all(15),
-            child: Text('help'),
-          ),
-          Button(title: 'Lobby erstellen', onPressed: null),
-        ],
+      body = Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                CardholderFormField('Kartenspiel', 'Skat'),
+                CardholderFormField('Spieleranzahl', '8'),
+                CardholderFormField('Sichtbarkeit', 'Privat'),
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Button(title: 'Lobby erstellen', onPressed: null),
+              ],
+            ),
+          ],
+        ),
       );
     }
 
