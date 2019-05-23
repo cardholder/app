@@ -1,4 +1,4 @@
-import 'package:cardholder/types/Lobby.dart';
+import 'package:cardholder/types/lobby.dart';
 import 'package:flutter/material.dart';
 
 class GameCard extends StatelessWidget {
