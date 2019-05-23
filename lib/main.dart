@@ -15,6 +15,14 @@ class Cardholder extends StatelessWidget {
         fontFamily: 'OpenSans',
         primaryColor: Color.fromRGBO(110, 174, 173, 1),
         buttonColor: Color.fromRGBO(83, 98, 145, 1),
+        textTheme: TextTheme(
+          body1: TextStyle(fontSize: 23),
+        ),
+        cardTheme: CardTheme(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        ),
       ),
       initialRoute: '/',
       routes: {

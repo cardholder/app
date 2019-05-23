@@ -1,7 +1,8 @@
 import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'ch_button.dart';
 
 class CreateLobby extends StatefulWidget {
   CreateLobby({Key key}) : super(key: key);
@@ -17,9 +18,24 @@ class CreateLobbyState extends State<CreateLobby> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: cardholderappbar(context),
-      body: DropdownButton<String>(
+    Widget body;
+
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      body = Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text('Kartenspiel:'),
+          Card(
+            margin: EdgeInsets.all(15),
+            child: Text('help'),
+          ),
+          Button(title: 'Lobby erstellen', onPressed: null),
+        ],
+      );
+    }
+
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      body = DropdownButton<String>(
         value: dropdownValue,
         onChanged: (String newValue) {
           setState(() {
@@ -33,7 +49,12 @@ class CreateLobbyState extends State<CreateLobby> {
             child: Text(value),
           );
         }).toList(),
-      ),
+      );
+    }
+
+    return Scaffold(
+      appBar: cardholderappbar(context),
+      body: body,
     );
   }
 }

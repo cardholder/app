@@ -9,10 +9,7 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
       margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Row(
@@ -24,12 +21,10 @@ class GameCard extends StatelessWidget {
                 Text(
                   _lobby.game,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 22),
                 ),
                 Text(
                   'Spieler ${_lobby.players.length.toString()} / ${_lobby.maxPlayers}',
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 22),
                 ),
               ],
             ),
