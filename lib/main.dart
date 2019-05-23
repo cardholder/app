@@ -4,9 +4,9 @@ import 'package:cardholder/widgets/createlobby.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(Cardholder());
 
-class MyApp extends StatelessWidget {
+class Cardholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
