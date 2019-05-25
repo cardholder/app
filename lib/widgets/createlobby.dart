@@ -17,7 +17,7 @@ class CreateLobby extends StatefulWidget {
 
 class CreateLobbyState extends State<CreateLobby> {
   var cardGameOptions = ['Skat', 'Mau-Mau'];
-  var maxPlayerOptions = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  var maxPlayerOptions = ['2', '3', '4', '5', '6', '7', '8'];
   var visibilityOptions = ['Privat', 'Öffentlich'];
 
   @override

@@ -16,16 +16,19 @@ class LobbyList extends StatefulWidget {
 }
 
 class LobbyListState extends State<LobbyList> {
-  final channel = IOWebSocketChannel.connect(
-      "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+  var channel;
   List<Lobby> _lobbies = [];
 
-  LobbyListState() {
+  @override
+  void initState() {
+    super.initState();
+    channel = IOWebSocketChannel.connect(
+        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
     fetchLobbies();
   }
 
   Future fetchLobbies() async {
-    channel.stream.listen((message) {
+    await channel.stream.listen((message) {
       var list = jsonDecode(message)['lobbies'] as List;
       setState(() {
         _lobbies = list.map((f) => Lobby.fromJson(f)).toList();
@@ -39,6 +42,7 @@ class LobbyListState extends State<LobbyList> {
       body: ListView.builder(
         itemCount: _lobbies.length,
         itemBuilder: (BuildContext context, int index) {
+          // TODO: Key zur Identifikation nutzen
           return GameCard(_lobbies[index]);
         },
       ),

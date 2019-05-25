@@ -9,7 +9,7 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      margin: EdgeInsets.only(left: 15, top: 15, right: 15),
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Row(

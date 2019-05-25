@@ -13,6 +13,8 @@ class CardholderFormField extends StatefulWidget {
   }
 }
 
+// TODO: ausgewähltes FormField kennzeichnen durch Farbe oder Animation
+
 class CardholderFormFieldState extends State<CardholderFormField> {
   String _title, _selectedOption = '';
   List<String> _options;
@@ -56,7 +58,7 @@ class CardholderFormFieldState extends State<CardholderFormField> {
             return Container(
               height: MediaQuery.of(context).copyWith().size.height / 3,
               child: CupertinoPicker.builder(
-                itemExtent: 35,
+                itemExtent: 33,
                 childCount: _options.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Text(
