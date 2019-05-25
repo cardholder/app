@@ -1,3 +1,4 @@
+import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_formfield.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class CreateLobbyState extends State<CreateLobby> {
 
   @override
   Widget build(BuildContext context) {
+    var lobby = InheritedDataProvider.of(context).lobby;
     Widget body;
     body = Padding(
       padding: const EdgeInsets.all(16.0),
@@ -52,3 +54,19 @@ class CreateLobbyState extends State<CreateLobby> {
 }
 
 // TODO: Sichtbarkeit als Switch
+
+class InheritedDataProvider extends InheritedWidget {
+  final Lobby lobby;
+
+  InheritedDataProvider({
+    Widget child,
+    this.lobby,
+  }) : super(child: child);
+
+  @override
+  bool updateShouldNotify(InheritedDataProvider oldWidget) =>
+      lobby != oldWidget.lobby;
+
+  static InheritedDataProvider of(BuildContext context) =>
+      context.inheritFromWidgetOfExactType(InheritedDataProvider);
+}
