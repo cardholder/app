@@ -2,25 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CardholderFormField extends StatefulWidget {
-  final String _title;
-  final List<String> _options;
+  final String title;
+  final List<String> options;
 
-  CardholderFormField(this._title, this._options);
+  CardholderFormField(this.title, this.options);
 
   @override
   State<StatefulWidget> createState() {
-    return CardholderFormFieldState(_title, _options);
+    return CardholderFormFieldState();
   }
 }
 
 // TODO: ausgewähltes FormField kennzeichnen durch Farbe oder Animation
 
 class CardholderFormFieldState extends State<CardholderFormField> {
-  String _title, _selectedOption = '';
-  List<String> _options;
+  String _selectedOption = '';
 
-  CardholderFormFieldState(this._title, this._options) {
-    _selectedOption = _options[0];
+  CardholderFormFieldState() {
+    _selectedOption = widget.options[0];
   }
 
   @override
@@ -31,7 +30,7 @@ class CardholderFormFieldState extends State<CardholderFormField> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(this._title),
+            Text(widget.title),
             Card(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,16 +58,16 @@ class CardholderFormFieldState extends State<CardholderFormField> {
               height: MediaQuery.of(context).copyWith().size.height / 3,
               child: CupertinoPicker.builder(
                 itemExtent: 33,
-                childCount: _options.length,
+                childCount: widget.options.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Text(
-                    _options[index],
+                    widget.options[index],
                     style: Theme.of(context).textTheme.body1,
                   );
                 },
                 onSelectedItemChanged: (int value) {
                   setState(() {
-                    _selectedOption = _options[value];
+                    _selectedOption = widget.options[value];
                   });
                 },
               ),
