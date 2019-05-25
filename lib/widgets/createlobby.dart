@@ -16,54 +16,34 @@ class CreateLobby extends StatefulWidget {
 }
 
 class CreateLobbyState extends State<CreateLobby> {
-  String dropdownValue = 'Skat';
+  var cardGameOptions = ['Skat', 'Mau-Mau'];
+  var maxPlayerOptions = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  var visibilityOptions = ['Privat', 'Öffentlich'];
 
   @override
   Widget build(BuildContext context) {
     Widget body;
-
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      body = Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                CardholderFormField('Kartenspiel', 'Skat'),
-                CardholderFormField('Spieleranzahl', '8'),
-                CardholderFormField('Sichtbarkeit', 'Privat'),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                Button(title: 'Lobby erstellen', onPressed: null),
-              ],
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (Theme.of(context).platform == TargetPlatform.android) {
-      body = DropdownButton<String>(
-        value: dropdownValue,
-        onChanged: (String newValue) {
-          setState(() {
-            dropdownValue = newValue;
-          });
-        },
-        items: <String>['Skat', 'Mau-Mau']
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      );
-    }
-
+    body = Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              CardholderFormField('Kartenspiel', cardGameOptions),
+              CardholderFormField('Spieleranzahl', maxPlayerOptions),
+              CardholderFormField('Sichtbarkeit', visibilityOptions),
+            ],
+          ),
+          Column(
+            children: <Widget>[
+              Button(title: 'Lobby erstellen', onPressed: null),
+            ],
+          ),
+        ],
+      ),
+    );
     return Scaffold(
       appBar: cardholderappbar(context),
       body: body,
