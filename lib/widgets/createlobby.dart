@@ -17,13 +17,13 @@ class CreateLobby extends StatefulWidget {
 }
 
 class CreateLobbyState extends State<CreateLobby> {
-  var cardGameOptions = ['Skat', 'Mau-Mau'];
+  Lobby lobby = Lobby(null, null, null, null, null);
+  var cardgameOptions = ['Skat', 'Mau-Mau'];
   var maxPlayerOptions = ['2', '3', '4', '5', '6', '7', '8'];
   var visibilityOptions = ['Privat', 'Öffentlich'];
 
   @override
   Widget build(BuildContext context) {
-    var lobby = InheritedDataProvider.of(context).lobby;
     Widget body;
     body = Padding(
       padding: const EdgeInsets.all(16.0),
@@ -33,14 +33,16 @@ class CreateLobbyState extends State<CreateLobby> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              CardholderFormField('Kartenspiel', cardGameOptions),
-              CardholderFormField('Spieleranzahl', maxPlayerOptions),
-              CardholderFormField('Sichtbarkeit', visibilityOptions),
+              CardholderFormField('Kartenspiel', cardgameOptions, cardgameCallback),
+              CardholderFormField('Spieleranzahl', maxPlayerOptions, maxPlayerCallback),
+              CardholderFormField('Sichtbarkeit', visibilityOptions, visibilityCallback),
             ],
           ),
           Column(
             children: <Widget>[
-              Button(title: 'Lobby erstellen', onPressed: null),
+              Button(title: 'Lobby erstellen', onPressed: () async {
+                print(lobby.toJson());
+              }),
             ],
           ),
         ],
@@ -51,22 +53,18 @@ class CreateLobbyState extends State<CreateLobby> {
       body: body,
     );
   }
+
+  void cardgameCallback(var option) {
+    lobby.game = option;
+  }
+
+  void maxPlayerCallback(var option) {
+    lobby.maxPlayers = int.parse(option);
+  }
+
+  void visibilityCallback(var option) {
+    lobby.visibility = option;
+  }
 }
 
 // TODO: Sichtbarkeit als Switch
-
-class InheritedDataProvider extends InheritedWidget {
-  final Lobby lobby;
-
-  InheritedDataProvider({
-    Widget child,
-    this.lobby,
-  }) : super(child: child);
-
-  @override
-  bool updateShouldNotify(InheritedDataProvider oldWidget) =>
-      lobby != oldWidget.lobby;
-
-  static InheritedDataProvider of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(InheritedDataProvider);
-}

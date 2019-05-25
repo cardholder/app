@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class CardholderFormField extends StatefulWidget {
   final String title;
   final List<String> options;
+  final Function callback;
 
-  CardholderFormField(this.title, this.options);
+  CardholderFormField(this.title, this.options, this.callback);
 
   @override
   State<StatefulWidget> createState() {
@@ -16,10 +17,13 @@ class CardholderFormField extends StatefulWidget {
 // TODO: ausgewähltes FormField kennzeichnen durch Farbe oder Animation
 
 class CardholderFormFieldState extends State<CardholderFormField> {
-  String _selectedOption = '';
+  String _selectedOption;
 
-  CardholderFormFieldState() {
+  @override
+  void initState() {
+    super.initState();
     _selectedOption = widget.options[0];
+    widget.callback(_selectedOption);
   }
 
   @override
@@ -38,7 +42,7 @@ class CardholderFormFieldState extends State<CardholderFormField> {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                    child: Text(this._selectedOption),
+                    child: Text(_selectedOption),
                   ),
                   Icon(
                     Icons.expand_more,
@@ -68,6 +72,7 @@ class CardholderFormFieldState extends State<CardholderFormField> {
                 onSelectedItemChanged: (int value) {
                   setState(() {
                     _selectedOption = widget.options[value];
+                    widget.callback(_selectedOption);
                   });
                 },
               ),
