@@ -1,4 +1,5 @@
-import 'package:cardholder/types/lobby.dart';
+import 'dart:convert';
+
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_formfield.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class CreateLobby extends StatefulWidget {
 }
 
 class CreateLobbyState extends State<CreateLobby> {
-  Lobby lobby = Lobby(null, null, null, null, null);
+  Map<String, dynamic> createLobbyMsg = Map();
   var cardgameOptions = ['Skat', 'Mau-Mau'];
   var maxPlayerOptions = ['2', '3', '4', '5', '6', '7', '8'];
   var visibilityOptions = ['Privat', 'Öffentlich'];
@@ -41,7 +42,7 @@ class CreateLobbyState extends State<CreateLobby> {
           Column(
             children: <Widget>[
               Button(title: 'Lobby erstellen', onPressed: () async {
-                print(lobby.toJson());
+                print(json.encode(createLobbyMsg));
               }),
             ],
           ),
@@ -55,15 +56,15 @@ class CreateLobbyState extends State<CreateLobby> {
   }
 
   void cardgameCallback(var option) {
-    lobby.game = option;
+    createLobbyMsg['game'] = option;
   }
 
   void maxPlayerCallback(var option) {
-    lobby.maxPlayers = int.parse(option);
+    createLobbyMsg['max_players'] = int.parse(option);
   }
 
   void visibilityCallback(var option) {
-    lobby.visibility = option;
+    createLobbyMsg['visibility'] = option;
   }
 }
 
