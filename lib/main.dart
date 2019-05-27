@@ -1,6 +1,6 @@
 import 'package:cardholder/widgets/home.dart';
 import 'package:cardholder/widgets/lobbylist.dart';
-import 'package:cardholder/widgets/createlobby.dart';
+import 'package:cardholder/widgets/lobbysettings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

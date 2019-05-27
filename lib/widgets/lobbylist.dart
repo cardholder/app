@@ -24,10 +24,10 @@ class LobbyListState extends State<LobbyList> {
     super.initState();
     channel = IOWebSocketChannel.connect(
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
-    fetchLobbies();
+    _fetchLobbies();
   }
 
-  Future fetchLobbies() async {
+  Future _fetchLobbies() async {
     await channel.stream.listen((message) {
       var list = jsonDecode(message)['lobbies'] as List;
       setState(() {
