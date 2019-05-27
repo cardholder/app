@@ -8,16 +8,16 @@ import 'package:flutter/widgets.dart';
 
 import 'ch_button.dart';
 
-class CreateLobby extends StatefulWidget {
-  CreateLobby({Key key}) : super(key: key);
+class LobbySettings extends StatefulWidget {
+  LobbySettings({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return CreateLobbyState();
+    return LobbySettingsState();
   }
 }
 
-class CreateLobbyState extends State<CreateLobby> {
+class LobbySettingsState extends State<LobbySettings> {
   Map<String, dynamic> createLobbyMsg = Map();
   var cardgameOptions = ['Skat', 'Mau-Mau'];
   var maxPlayerOptions = ['2', '3', '4', '5', '6', '7', '8'];
@@ -54,6 +54,8 @@ class CreateLobbyState extends State<CreateLobby> {
       body: body,
     );
   }
+
+
 
   void cardgameCallback(var option) {
     createLobbyMsg['game'] = option;

@@ -28,7 +28,7 @@ class Cardholder extends StatelessWidget {
       routes: {
         '/': (context) => Home(),
         '/lobbylist': (context) => LobbyList(),
-        '/createlobby': (context) => CreateLobby(),
+        '/createlobby': (context) => LobbySettings(),
       },
     );
   }
