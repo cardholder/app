@@ -31,9 +31,11 @@ class GameCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Icon(
-                  Icons.play_arrow,
-                  size: 60,
+                IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/lobby', arguments: _lobby);
+                  },
                 ),
               ],
             )
