@@ -1,4 +1,3 @@
-import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
@@ -15,12 +14,15 @@ class Lobby extends StatelessWidget {
           Card(
             margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('Lobbylink'),
-                  Text('http://cardholder.com/${_lobby?.id}'),
+                  Text(
+                    'http://cardholder.com/${_lobby?.id}',
+                    style: Theme.of(context).textTheme.body2,
+                  ),
                 ],
               ),
             ),
@@ -36,7 +38,10 @@ class Lobby extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Kartenspiel'),
-                      Text(_lobby?.game),
+                      Text(
+                        _lobby?.game,
+                        style: Theme.of(context).textTheme.body2,
+                      ),
                     ],
                   ),
                 ),
@@ -49,7 +54,10 @@ class Lobby extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text('Sichtbarkeit'),
-                      Text(_lobby?.visibility),
+                      Text(
+                        _lobby?.visibility,
+                        style: Theme.of(context).textTheme.body2,
+                      ),
                     ],
                   ),
                 ),
@@ -64,7 +72,10 @@ class Lobby extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Spieler'),
-                  ..._lobby.players.map((player) => Text(player?.name)), 
+                  ..._lobby.players.map(
+                    (player) => Text(player?.name,
+                        style: Theme.of(context).textTheme.body2),
+                  ),
                 ],
               ),
             ),
