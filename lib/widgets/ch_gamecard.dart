@@ -25,6 +25,7 @@ class GameCard extends StatelessWidget {
                 Text(
                   'Spieler ${_lobby.players.length.toString()} / ${_lobby.maxPlayers}',
                   textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.body2,
                 ),
               ],
             ),
@@ -32,7 +33,10 @@ class GameCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.play_arrow),
+                  icon: Icon(
+                    Icons.play_arrow,
+                    size: 35,
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/lobby', arguments: _lobby);
                   },
