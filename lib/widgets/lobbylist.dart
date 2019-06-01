@@ -16,36 +16,56 @@ class LobbyList extends StatefulWidget {
 }
 
 class LobbyListState extends State<LobbyList> {
+  BuildContext scaffoldContext;
   var channel;
   List<Lobby> _lobbies = [];
 
   @override
   void initState() {
     super.initState();
-    channel = IOWebSocketChannel.connect(
+    try {
+      channel = IOWebSocketChannel.connect(
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+    } catch (all) {
+      displaySnackBar('Keine Verbindung zum Server');
+    }
     _fetchLobbies();
   }
 
   Future _fetchLobbies() async {
-    await channel.stream.listen((message) {
-      var list = jsonDecode(message)['lobbies'] as List;
-      setState(() {
-        _lobbies = list.map((f) => Lobby.fromJson(f)).toList();
-      });
+    channel.stream.listen((message) {
+      print(message);
+      List list = jsonDecode(message)['lobbies'] as List;
+      if (list.length == 0) {
+        // Fullscreen errormsg
+        displaySnackBar('Keine Lobbys verfügbar');
+      } else {
+        setState(() {
+          _lobbies = list.map((f) => Lobby.fromJson(f)).toList();
+        });
+      }
     });
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: cardholderappbar(context),
-      body: ListView.builder(
-        itemCount: _lobbies.length,
-        itemBuilder: (BuildContext context, int index) {
-          // TODO: Key zur Identifikation nutzen
-          return GameCard(_lobbies[index]);
-        },
-      ),
-    );
+        appBar: cardholderappbar(context),
+        body: Builder(
+          builder: (BuildContext context) {
+            scaffoldContext = context;
+            return ListView.builder(
+              itemCount: _lobbies.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GameCard(_lobbies[index]);
+              },
+            );
+          },
+        ));
+  }
+
+  void displaySnackBar(String content) {
+    final snackBar =
+        new SnackBar(content: new Text(content), backgroundColor: Colors.red);
+    Scaffold.of(scaffoldContext).showSnackBar(snackBar);
   }
 }
