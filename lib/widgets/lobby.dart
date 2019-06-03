@@ -41,10 +41,13 @@ class LobbyState extends State<Lobby> {
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
     channel.sink.add(jsonEncode(json));
     channel.stream.listen((message) {
-      List list = jsonDecode(message)['players'] as List;
-      setState(() {
-        _lobby.players = list.map((f) => Player.fromJson(f)).toList();
-      });
+      Map<String, dynamic> response = jsonDecode(message);
+      if (response['players'] != null) {
+        List list = jsonDecode(message)['players'] as List;
+        setState(() {
+          _lobby.players = list.map((f) => Player.fromJson(f)).toList();
+        });
+      } else if (response['lobby'] != null) {}
     });
   }
 
