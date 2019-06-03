@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_formfield.dart';
+import 'package:cardholder/widgets/lobby.dart' as Route;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -27,7 +28,7 @@ class LobbySettingsState extends State<LobbySettings> {
     'max_players': null
   };
   var channel;
-  var cardgameOptions = ['Durak', 'Mau-Mau'];
+  var cardgameOptions = ['Mau-Mau', 'Durak'];
   var maxPlayerOptions = ['2', '3', '4', '5', '6'];
   var visibilityOptions = ['Privat', 'Öffentlich'];
 
@@ -80,7 +81,12 @@ class LobbySettingsState extends State<LobbySettings> {
       id = jsonDecode(response)['id'] as String;
       if (id.length == 7) {
         _newLobby.id = id;
-        Navigator.pushNamed(context, '/lobby', arguments: _newLobby);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Route.Lobby(_newLobby),
+          ),
+        );
       } else {}
     });
   }

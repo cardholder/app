@@ -35,7 +35,7 @@ class Cardholder extends StatelessWidget {
         '/': (context) => Home(),
         '/lobbylist': (context) => LobbyList(),
         '/createlobby': (context) => LobbySettings(),
-        '/lobby': (context) => Lobby(),
+        '/lobby': (context) => Lobby(null),
       },
     );
   }

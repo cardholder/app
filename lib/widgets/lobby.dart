@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,9 @@ import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:web_socket_channel/io.dart';
 
 class Lobby extends StatefulWidget {
+  final Type.Lobby _lobby;
+  Lobby(this._lobby);
+
   @override
   State<StatefulWidget> createState() {
     return LobbyState();
@@ -14,19 +19,37 @@ class Lobby extends StatefulWidget {
 class LobbyState extends State<Lobby> {
   var channel;
   Type.Lobby _lobby;
+  int leader;
+  Map<String, dynamic> json = {'name': 'Flutter'};
 
   @override
   void initState() {
     super.initState();
+    _lobby = widget._lobby;
+    if (_lobby.players == null) _lobby.players = new List<Player>();
+    _subscribeLobby();
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close();
+    super.dispose();
+  }
+
+  Future _subscribeLobby() async {
     channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}");
+        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
+    channel.sink.add(jsonEncode(json));
+    channel.stream.listen((message) {
+      List list = jsonDecode(message)['players'] as List;
+      setState(() {
+        _lobby.players = list.map((f) => Player.fromJson(f)).toList();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    _lobby = ModalRoute.of(context).settings.arguments;
-    if (_lobby.players == null) _lobby.players = new List<Player>();
-
     return Scaffold(
       appBar: cardholderappbar(context),
       body: Column(
@@ -41,7 +64,7 @@ class LobbyState extends State<Lobby> {
                 children: <Widget>[
                   Text('Lobbylink'),
                   Text(
-                    'http://cardholder.com/${_lobby?.id}',
+                    'cardholder.surge.sh/${_lobby?.id}',
                     style: Theme.of(context).textTheme.body2,
                   ),
                 ],

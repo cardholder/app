@@ -1,4 +1,5 @@
 import 'package:cardholder/types/lobby.dart';
+import 'package:cardholder/widgets/lobby.dart' as Route;
 import 'package:flutter/material.dart';
 
 class GameCard extends StatelessWidget {
@@ -38,7 +39,12 @@ class GameCard extends StatelessWidget {
                     size: 35,
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/lobby', arguments: _lobby);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Route.Lobby(_lobby),
+                      ),
+                    );
                   },
                 ),
               ],
