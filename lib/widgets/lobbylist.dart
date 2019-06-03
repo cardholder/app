@@ -25,25 +25,60 @@ class LobbyListState extends State<LobbyList> {
     super.initState();
     try {
       channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+          "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
     } catch (all) {
       displaySnackBar('Keine Verbindung zum Server');
     }
-    _fetchLobbies();
+    _subscribeLobbyList();
   }
 
-  Future _fetchLobbies() async {
+  @override
+  void dispose() {
+    channel.sink.close();
+    super.dispose();
+  }
+
+  Future _subscribeLobbyList() async {
     channel.stream.listen((message) {
-      print(message);
-      List list = jsonDecode(message)['lobbies'] as List;
-      if (list.length == 0) {
-        // Fullscreen errormsg
-        displaySnackBar('Keine Lobbys verfügbar');
-      } else {
-        setState(() {
-          _lobbies = list.map((f) => Lobby.fromJson(f)).toList();
-        });
+      Map<String, dynamic> response = jsonDecode(message);
+      if (response['lobbies'] != null) {
+        _setLobbies(response);
+      } else if (response['lobby'] != null) {
+        _updateLobby(response);
+      } else if (response['lobby_id'] != null) {
+        _removeLobby(response['lobby_id']);
       }
+    });
+  }
+
+  Future _setLobbies(Map response) async {
+    List list = await response['lobbies'] as List;
+    if (list.length > 0) {
+      setState(() {
+        _lobbies = list.map((f) => Lobby.fromJson(f)).toList();
+      });
+    } else {
+      displaySnackBar('Keine Lobbies verfügbar.');
+    }
+  }
+
+  Future _updateLobby(Map response) async {
+    var newLobby = Lobby.fromJson(response['lobby']);
+    var index = _lobbies.indexWhere((lobby) => lobby.id == newLobby.id);
+    if (index < 0) {
+      setState(() {
+        _lobbies.add(newLobby);
+      });
+    } else {
+      setState(() {
+        _lobbies[index] = newLobby;
+      });
+    }
+  }
+
+  Future _removeLobby(String lobbyId) async {
+    setState(() {
+      _lobbies.removeWhere((lobby) => lobby.id == lobbyId);
     });
   }
 
