@@ -1,4 +1,5 @@
 import 'package:cardholder/types/lobby.dart';
+import 'package:cardholder/widgets/lobby.dart' as Route;
 import 'package:flutter/material.dart';
 
 class GameCard extends StatelessWidget {
@@ -25,15 +26,26 @@ class GameCard extends StatelessWidget {
                 Text(
                   'Spieler ${_lobby.players.length.toString()} / ${_lobby.maxPlayers}',
                   textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.body2,
                 ),
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Icon(
-                  Icons.play_arrow,
-                  size: 60,
+                IconButton(
+                  icon: Icon(
+                    Icons.play_arrow,
+                    size: 35,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Route.Lobby(_lobby),
+                      ),
+                    );
+                  },
                 ),
               ],
             )

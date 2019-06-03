@@ -1,4 +1,5 @@
 import 'package:cardholder/widgets/home.dart';
+import 'package:cardholder/widgets/lobby.dart';
 import 'package:cardholder/widgets/lobbylist.dart';
 import 'package:cardholder/widgets/lobbysettings.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,19 +17,25 @@ class Cardholder extends StatelessWidget {
         primaryColor: Color.fromRGBO(110, 174, 173, 1),
         buttonColor: Color.fromRGBO(83, 98, 145, 1),
         textTheme: TextTheme(
-          body1: TextStyle(fontSize: 23),
+          body1: TextStyle(fontSize: 22),
+          body2: TextStyle(
+            fontSize: 22,
+            color: Color.fromRGBO(128, 128, 128, 1),
+          ),
         ),
         cardTheme: CardTheme(
-          elevation: 4,
+          elevation: 5,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => Home(),
         '/lobbylist': (context) => LobbyList(),
         '/createlobby': (context) => LobbySettings(),
+        '/lobby': (context) => Lobby(null),
       },
     );
   }
