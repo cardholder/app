@@ -30,7 +30,7 @@ class LobbySettingsState extends State<LobbySettings> {
   var channel;
   var cardgameOptions = ['Mau-Mau', 'Durak'];
   var maxPlayerOptions = ['2', '3', '4', '5', '6'];
-  var visibilityOptions = ['Privat', 'Öffentlich'];
+  var visibilityOptions = ['public', 'private'];
 
   @override
   Widget build(BuildContext context) {
