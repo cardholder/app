@@ -63,15 +63,15 @@ class LobbyListState extends State<LobbyList> {
   }
 
   Future _updateLobby(Map response) async {
-    var newLobby = Lobby.fromJson(response['lobby']);
-    var index = _lobbies.indexWhere((lobby) => lobby.id == newLobby.id);
+    var _newLobby = Lobby.fromJson(response['lobby']);
+    var index = _lobbies.indexWhere((lobby) => lobby.id == _newLobby.id);
     if (index < 0) {
       setState(() {
-        _lobbies.add(newLobby);
+        _lobbies.add(_newLobby);
       });
     } else {
       setState(() {
-        _lobbies[index] = newLobby;
+        _lobbies[index] = _newLobby;
       });
     }
   }
