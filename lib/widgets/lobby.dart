@@ -1,11 +1,32 @@
+import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
+import 'package:web_socket_channel/io.dart';
 
-class Lobby extends StatelessWidget {
+class Lobby extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return LobbyState();
+  }
+}
+
+class LobbyState extends State<Lobby> {
+  var channel;
+  Type.Lobby _lobby;
+
+  @override
+  void initState() {
+    super.initState();
+    channel = IOWebSocketChannel.connect(
+        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}");
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Type.Lobby _lobby = ModalRoute.of(context).settings.arguments;
+    _lobby = ModalRoute.of(context).settings.arguments;
+    if (_lobby.players == null) _lobby.players = new List<Player>();
+
     return Scaffold(
       appBar: cardholderappbar(context),
       body: Column(
@@ -72,7 +93,7 @@ class Lobby extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Spieler'),
-                  ..._lobby.players.map(
+                  ..._lobby.players?.map(
                     (player) => Text(player?.name,
                         style: Theme.of(context).textTheme.body2),
                   ),

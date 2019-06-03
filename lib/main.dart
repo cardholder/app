@@ -29,6 +29,7 @@ class Cardholder extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(10))),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => Home(),
