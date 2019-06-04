@@ -4,6 +4,7 @@ import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
+import 'package:flutter/services.dart';
 import 'package:web_socket_channel/io.dart';
 
 class Lobby extends StatefulWidget {
@@ -55,79 +56,102 @@ class LobbyState extends State<Lobby> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: cardholderappbar(context),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Card(
-            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Lobbylink'),
-                  Text(
-                    'cardholder.surge.sh/${_lobby?.id}',
-                    style: Theme.of(context).textTheme.body2,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Builder(
+        builder: (BuildContext context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Card(
-                margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Kartenspiel'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Lobbylink'),
+                          GestureDetector(
+                            child: Icon(
+                              Icons.content_copy,
+                              size: 20,
+                            ),
+                            onTap: () {
+                              Clipboard.setData(new ClipboardData(
+                                  text: 'cardholder.surge.sh/${_lobby?.id}'));
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text('Lobbylink kopiert.'),
+                                backgroundColor: Colors.green,
+                              ));
+                            },
+                          ),
+                        ],
+                      ),
                       Text(
-                        _lobby?.game,
+                        'cardholder.surge.sh/${_lobby?.id}',
                         style: Theme.of(context).textTheme.body2,
                       ),
                     ],
                   ),
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Card(
+                    margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Kartenspiel'),
+                          Text(
+                            _lobby?.game,
+                            style: Theme.of(context).textTheme.body2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.only(right: 15, bottom: 15),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Sichtbarkeit'),
+                          Text(
+                            _lobby?.visibility,
+                            style: Theme.of(context).textTheme.body2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Card(
-                margin: EdgeInsets.only(right: 15, bottom: 15),
+                margin: EdgeInsets.symmetric(horizontal: 15),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Sichtbarkeit'),
-                      Text(
-                        _lobby?.visibility,
-                        style: Theme.of(context).textTheme.body2,
+                    children: [
+                      Text('Spieler'),
+                      ..._lobby.players?.map(
+                        (player) => Text(player?.name,
+                            style: Theme.of(context).textTheme.body2),
                       ),
                     ],
                   ),
                 ),
               ),
             ],
-          ),
-          Card(
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Spieler'),
-                  ..._lobby.players?.map(
-                    (player) => Text(player?.name,
-                        style: Theme.of(context).textTheme.body2),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
