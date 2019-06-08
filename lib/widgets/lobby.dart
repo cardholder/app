@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_button.dart';
+import 'package:cardholder/widgets/ch_playerentry.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:flutter/services.dart';
@@ -21,7 +22,9 @@ class Lobby extends StatefulWidget {
 class LobbyState extends State<Lobby> {
   var channel;
   Type.Lobby _lobby;
-  Map<String, dynamic> json = {'name': 'Flutter'};
+  int _myId;
+  Player _leader;
+  Map<String, dynamic> json = {'name': 'Flutter'}; //TODO namen abfragen
 
   @override
   void initState() {
@@ -42,14 +45,26 @@ class LobbyState extends State<Lobby> {
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
     channel.sink.add(jsonEncode(json));
     channel.stream.listen((message) {
+      print(message);
       Map<String, dynamic> response = jsonDecode(message);
-      if (response['players'] != null) {
+      if (response['your_id'] != null) {
+        _myId = response['your_id'];
+      } else if (response['players'] != null) {
         List list = jsonDecode(message)['players'] as List;
         setState(() {
           _lobby.players = list.map((f) => Player.fromJson(f)).toList();
         });
-      } else if (response['lobby'] != null) {}
+        _leader = (_lobby.players.firstWhere((player) => player.role == 'leader'));
+      } else if (response['lobby'] != null) {
+        //TODO Lobbyinfos abrufen wenn join über Link
+      } else if (response['message'] != null) Navigator.pop(context);
     });
+  }
+
+  void _kickPlayer(int id) {
+    if (channel != null) {
+      channel.sink.add(jsonEncode({'player_id': id}));
+    }
   }
 
   @override
@@ -149,13 +164,17 @@ class LobbyState extends State<Lobby> {
                             children: <Widget>[
                               Text('Spieler'),
                               Text(
-                                  '${_lobby.players?.length}/${_lobby?.maxPlayers}'),
+                                '${_lobby.players?.length}/${_lobby?.maxPlayers}',
+                                style: Theme.of(context).textTheme.body2,
+                              ),
                             ],
                           ),
-                          ..._lobby.players?.map(
-                            (player) => Text(player?.name,
-                                style: Theme.of(context).textTheme.body2),
-                          ),
+                          ..._lobby.players?.map((player) => PlayerEntry(
+                                player,
+                                _myId,
+                                _leader?.id,
+                                _kickPlayer,
+                              )),
                         ],
                       ),
                     ),
