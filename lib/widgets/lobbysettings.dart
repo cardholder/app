@@ -34,38 +34,36 @@ class LobbySettingsState extends State<LobbySettings> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
-    body = Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              CardholderFormField(
-                  'Kartenspiel', cardgameOptions, cardgameCallback),
-              CardholderFormField(
-                  'Spieleranzahl', maxPlayerOptions, maxPlayerCallback),
-              CardholderFormField(
-                  'Sichtbarkeit', visibilityOptions, visibilityCallback),
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Button(
-                  title: 'Lobby erstellen',
-                  onPressed: () async {
-                    _createLobby(createLobbyMsg);
-                  }),
-            ],
-          ),
-        ],
-      ),
-    );
     return Scaffold(
       appBar: cardholderappbar(context),
-      body: body,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 35),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                CardholderFormField(
+                    'Kartenspiel', cardgameOptions, cardgameCallback),
+                CardholderFormField(
+                    'Spieleranzahl', maxPlayerOptions, maxPlayerCallback),
+                CardholderFormField(
+                    'Sichtbarkeit', visibilityOptions, visibilityCallback),
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Button(
+                    title: 'Lobby erstellen',
+                    onPressed: () async {
+                      _createLobby(createLobbyMsg);
+                    }),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

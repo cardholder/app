@@ -26,7 +26,7 @@ class LobbyListState extends State<LobbyList> {
     try {
       channel = IOWebSocketChannel.connect(
           "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
-    } catch (all) {
+    } catch (SocketException) {
       displaySnackBar('Keine Verbindung zum Server');
     }
     _subscribeLobbyList();
