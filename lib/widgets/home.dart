@@ -1,9 +1,11 @@
 import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/usernamedialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,8 +16,10 @@ class Home extends StatelessWidget {
           children: <Widget>[
             Button(
               title: 'Lobby suchen',
-              onPressed: () {
-                Navigator.pushNamed(context, '/lobbylist');
+              onPressed: () async {
+                UsernameDialog ud = UsernameDialog();
+                ud.show(context);
+                //Navigator.pushNamed(context, '/lobbylist');
               },
             ),
             Button(
