@@ -7,6 +7,7 @@ import 'package:cardholder/widgets/ch_playerentry.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:flutter/services.dart';
+import 'package:flutter_alert/flutter_alert.dart';
 import 'package:web_socket_channel/io.dart';
 
 class Lobby extends StatefulWidget {
@@ -45,7 +46,6 @@ class LobbyState extends State<Lobby> {
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
     channel.sink.add(jsonEncode(json));
     channel.stream.listen((message) {
-      print(message);
       Map<String, dynamic> response = jsonDecode(message);
       if (response['your_id'] != null) {
         _myId = response['your_id'];
@@ -54,17 +54,35 @@ class LobbyState extends State<Lobby> {
         setState(() {
           _lobby.players = list.map((f) => Player.fromJson(f)).toList();
         });
-        _leader = (_lobby.players.firstWhere((player) => player.role == 'leader'));
+        _leader =
+            (_lobby.players.firstWhere((player) => player.role == 'leader'));
       } else if (response['lobby'] != null) {
         //TODO Lobbyinfos abrufen wenn join über Link
       } else if (response['message'] != null) Navigator.pop(context);
     });
   }
 
-  void _kickPlayer(int id) {
-    if (channel != null) {
-      channel.sink.add(jsonEncode({'player_id': id}));
-    }
+  void _kickPlayer(Player _player) {
+    showAlert(
+      context: context,
+      title: '${_player.name} wirklich kicken?',
+      actions: [
+        AlertAction(
+          text: 'Ja',
+          isDestructiveAction: true,
+          onPressed: () async {
+            if (channel != null) {
+              channel.sink.add(jsonEncode({'player_id': _player.id}));
+            }
+          },
+        ),
+        AlertAction(
+          text: 'Nein',
+          onPressed: null,
+          automaticallyPopNavigation: true,
+        ),
+      ],
+    );
   }
 
   @override

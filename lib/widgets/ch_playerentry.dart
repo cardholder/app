@@ -40,7 +40,7 @@ class PlayerEntry extends StatelessWidget {
     if (_myId == _leaderId && _myId != _player.id) {
       entry.add(
         GestureDetector(
-          onTap: () => {_kickCallback(_player.id)},
+          onTap: () => {_kickCallback(_player)},
           child: Icon(
             Icons.close,
             size: 30,
