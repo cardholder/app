@@ -2,6 +2,7 @@ import 'package:cardholder/widgets/home.dart';
 import 'package:cardholder/widgets/lobby.dart';
 import 'package:cardholder/widgets/lobbylist.dart';
 import 'package:cardholder/widgets/lobbysettings.dart';
+import 'package:cardholder/widgets/usernamedialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,7 @@ class Cardholder extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Home(),
+        '/username': (context) => UsernameDialog(),
         '/lobbylist': (context) => LobbyList(),
         '/createlobby': (context) => LobbySettings(),
         '/lobby': (context) => Lobby(null),
