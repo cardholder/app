@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_button.dart';
@@ -25,7 +26,9 @@ class LobbyState extends State<Lobby> {
   Type.Lobby _lobby;
   int _myId;
   Player _leader;
-  Map<String, dynamic> json = {'name': 'Flutter'}; //TODO namen abfragen
+  Map<String, String> usernameJson = {
+    'name': userData.username
+  };
 
   @override
   void initState() {
@@ -44,22 +47,29 @@ class LobbyState extends State<Lobby> {
   Future _subscribeLobby() async {
     channel = IOWebSocketChannel.connect(
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
-    channel.sink.add(jsonEncode(json));
+    channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
+      print(message);
       Map<String, dynamic> response = jsonDecode(message);
       if (response['your_id'] != null) {
         _myId = response['your_id'];
       } else if (response['players'] != null) {
-        List list = jsonDecode(message)['players'] as List;
-        setState(() {
-          _lobby.players = list.map((f) => Player.fromJson(f)).toList();
-        });
-        _leader =
-            (_lobby.players.firstWhere((player) => player.role == 'leader'));
+        _setPlayers(response);
       } else if (response['lobby'] != null) {
         //TODO Lobbyinfos abrufen wenn join über Link
       } else if (response['message'] != null) Navigator.pop(context);
     });
+  }
+
+  void _setPlayers(Map response) {
+    List list = response['players'] as List;
+    if (list.length > 0) {
+      setState(() {
+        _lobby.players = list.map((f) => Player.fromJson(f)).toList();
+      });
+      _leader =
+          (_lobby.players.firstWhere((player) => player.role == 'leader'));
+    }
   }
 
   void _kickPlayer(Player _player) {
