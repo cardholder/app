@@ -5,10 +5,9 @@ import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_playerentry.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_web/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
-import 'package:flutter/services.dart';
-import 'package:flutter_alert/flutter_alert.dart';
+import 'package:flutter_web/services.dart';
 import 'package:web_socket_channel/io.dart';
 
 class Lobby extends StatefulWidget {
@@ -26,9 +25,7 @@ class LobbyState extends State<Lobby> {
   Type.Lobby _lobby;
   int _myId;
   Player _leader;
-  Map<String, String> usernameJson = {
-    'name': userData.username
-  };
+  Map<String, String> usernameJson = {'name': userData.username};
 
   @override
   void initState() {
@@ -73,26 +70,9 @@ class LobbyState extends State<Lobby> {
   }
 
   void _kickPlayer(Player _player) {
-    showAlert(
-      context: context,
-      title: '${_player.name} wirklich kicken?',
-      actions: [
-        AlertAction(
-          text: 'Ja',
-          isDestructiveAction: true,
-          onPressed: () async {
-            if (channel != null) {
-              channel.sink.add(jsonEncode({'player_id': _player.id}));
-            }
-          },
-        ),
-        AlertAction(
-          text: 'Nein',
-          onPressed: null,
-          automaticallyPopNavigation: true,
-        ),
-      ],
-    );
+    if (channel != null) {
+      channel.sink.add(jsonEncode({'player_id': _player.id}));
+    }
   }
 
   @override

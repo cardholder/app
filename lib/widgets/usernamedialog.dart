@@ -1,9 +1,9 @@
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_button.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_web/cupertino.dart';
+import 'package:flutter_web/material.dart';
+import 'package:flutter_web/widgets.dart';
 import 'package:validators/validators.dart';
 
 class UsernameDialog extends StatelessWidget {
@@ -49,7 +49,7 @@ class UsernameDialog extends StatelessWidget {
                       Card(
                         elevation: 0,
                         color: Color.fromRGBO(235, 235, 235, 1),
-                        child: CupertinoTextField(
+                        child: TextField(
                           controller: textEditingController,
                           autocorrect: false,
                           autofocus: true,

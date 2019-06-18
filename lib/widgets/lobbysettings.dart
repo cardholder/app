@@ -4,10 +4,10 @@ import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_formfield.dart';
 import 'package:cardholder/widgets/lobby.dart' as Route;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_web/cupertino.dart';
+import 'package:flutter_web/material.dart';
+import 'package:flutter_web/rendering.dart';
+import 'package:flutter_web/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 
 import 'ch_button.dart';

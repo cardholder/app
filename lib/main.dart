@@ -3,8 +3,8 @@ import 'package:cardholder/widgets/lobby.dart';
 import 'package:cardholder/widgets/lobbylist.dart';
 import 'package:cardholder/widgets/lobbysettings.dart';
 import 'package:cardholder/widgets/usernamedialog.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_web/cupertino.dart';
+import 'package:flutter_web/material.dart';
 
 void main() => runApp(Cardholder());
 

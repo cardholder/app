@@ -1,0 +1,18 @@
+[
+    {
+      "family": "Lobster",
+      "fonts": [
+        {
+          "asset": "fonts/Lobster-Regular.ttf"
+        }
+      ]
+    },
+    {
+      "family": "OpenSans",
+      "fonts": [
+        {
+          "asset": "fonts/OpenSans-Light.ttf"
+        }
+      ]
+    }
+  ]

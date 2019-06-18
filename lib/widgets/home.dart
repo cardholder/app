@@ -1,8 +1,8 @@
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_web/cupertino.dart';
+import 'package:flutter_web/material.dart';
 
 class Home extends StatelessWidget {
   @override

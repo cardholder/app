@@ -1,6 +1,6 @@
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/lobby.dart' as Route;
-import 'package:flutter/material.dart';
+import 'package:flutter_web/material.dart';
 
 class GameCard extends StatelessWidget {
   final Lobby _lobby;
