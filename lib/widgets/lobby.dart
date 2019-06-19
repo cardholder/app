@@ -78,6 +78,9 @@ class LobbyState extends State<Lobby> {
       case 'You got kicked!':
         Navigator.pop(context);
         break;
+      case 'Lobby is full!':
+        Navigator.pop(context);
+        break;
       case 'Game is started':
         _startGame();
         break;
