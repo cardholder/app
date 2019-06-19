@@ -10,32 +10,46 @@ class MauMau extends StatefulWidget {
 }
 
 class MauMauState extends State<MauMau> {
-
-  List<PlayingCard> hand = [PlayingCard(true), PlayingCard(true), PlayingCard(true),];
+  List<PlayingCard> hand = [
+    PlayingCard(),
+    PlayingCard(),
+    PlayingCard(),
+  ];
+  List<PlayingCard> pile = List();
 
   @override
   Widget build(BuildContext context) {
-    bool accepted = false;
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-            height: 150,
-            width: 90,
-            child: DragTarget(
-              builder: (context, List<PlayingCard> candidateData, rejectedData) {
-                return accepted ? PlayingCard(true) : Container(child: Text('Target'),);
-              },
-              onWillAccept: (data) {
-                print('Will Accept');
-                return true;
-              },
-              onAccept: (data) {
-                print('On Accept');
-                accepted = true;
-              },
-            ),
+          Text('Player'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  PlayingCard(),
+                  PlayingCard(),
+                  PlayingCard(),
+                  PlayingCard(),
+                ],
+              ),
+              DragTarget(
+                builder:
+                    (context, List<PlayingCard> candidateData, rejectedData) {
+                  return pile.length == 0 ? Container(width: 90, height: 150) : Stack(children: pile);
+                },
+                onWillAccept: (data) {
+                  return true;
+                },
+                onAccept: (data) {
+                  pile.add(data);
+                  hand.remove(data);
+                  setState(() {});
+                },
+              ),
+            ],
           ),
           Row(
             children: hand,

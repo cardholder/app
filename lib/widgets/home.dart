@@ -1,8 +1,11 @@
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/game.dart';
+import 'package:cardholder/widgets/lobby.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cardholder/types/lobby.dart' as Type;
 
 class Home extends StatelessWidget {
   @override
@@ -18,8 +21,10 @@ class Home extends StatelessWidget {
               title: 'Lobby suchen',
               onPressed: () async {
                 if (userData.username == '') {
-                  final usernameSet = await Navigator.pushNamed(context, '/username');
-                  if (usernameSet == true) Navigator.pushNamed(context, '/lobbylist');
+                  final usernameSet =
+                      await Navigator.pushNamed(context, '/username');
+                  if (usernameSet == true)
+                    Navigator.pushNamed(context, '/lobbylist');
                 } else {
                   Navigator.pushNamed(context, '/lobbylist');
                 }
@@ -29,13 +34,24 @@ class Home extends StatelessWidget {
               title: 'Lobby erstellen',
               onPressed: () async {
                 if (userData.username == '') {
-                  final usernameSet = await Navigator.pushNamed(context, '/username');
-                  if (usernameSet == true) Navigator.pushNamed(context, '/createlobby');
+                  final usernameSet =
+                      await Navigator.pushNamed(context, '/username');
+                  if (usernameSet == true)
+                    Navigator.pushNamed(context, '/createlobby');
                 } else {
                   Navigator.pushNamed(context, '/createlobby');
                 }
               },
             ),
+            Button(
+              title: 'Debug',
+              onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Game(Type.Lobby(null, 'Mau Mau', null, 6, null))),
+                    ),
+                  },
+            )
           ],
         ),
       ),
