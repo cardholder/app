@@ -1,5 +1,6 @@
 import 'package:cardholder/games/maumau.dart';
 import 'package:cardholder/types/lobby.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Game extends StatelessWidget {
@@ -17,6 +18,8 @@ class Game extends StatelessWidget {
       default:
         Navigator.pop(context);
     }
-    return selectedGame;
+    return Scaffold(
+      body: selectedGame,
+    );
   }
 }
