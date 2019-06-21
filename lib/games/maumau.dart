@@ -64,31 +64,41 @@ class MauMauState extends State<MauMau> {
         ),
         Row(
           children: <Widget>[
-            DragTarget(
-              builder:
-                  (context, List<PlayingCard> candidateData, rejectedData) {
-                return Container(
-                  height: 135,
+            Column(
+              children: <Widget>[
+                DragTarget(
+                  builder:
+                      (context, List<PlayingCard> candidateData, rejectedData) {
+                    return Container(
+                      height: 135,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: hand
+                            .map((f) => Positioned(
+                                left: hand.indexOf(f) *
+                                    (MediaQuery.of(context).size.width /
+                                        hand.length),
+                                child: f))
+                            .toList(),
+                      ),
+                    );
+                  },
+                  onWillAccept: (data) {
+                    return true;
+                  },
+                  onAccept: (data) {
+                    setState(() {
+                     hand.add(PlayingCard()); 
+                    });
+                  },
+                ),
+                Container(
+                  height: 35,
                   width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: hand
-                        .map((f) => Positioned(
-                            left: hand.indexOf(f) *
-                                (MediaQuery.of(context).size.width /
-                                    hand.length),
-                            child: f))
-                        .toList(),
-                  ),
-                );
-              },
-              onWillAccept: (data) {
-                return true;
-              },
-              onAccept: (data) {
-                setState(() {
-                 hand.add(PlayingCard()); 
-                });
-              },
+                  color: Colors.green,
+                  child: Text('Username'),
+                ),
+              ],
             ),
           ],
         ),
