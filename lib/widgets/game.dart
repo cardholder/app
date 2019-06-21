@@ -13,7 +13,7 @@ class Game extends StatelessWidget {
     Widget selectedGame;
     switch (_lobby.game) {
       case 'Mau Mau':
-        selectedGame = MauMau();
+        selectedGame = MauMau(_lobby);
         break;
       default:
         Navigator.pop(context);

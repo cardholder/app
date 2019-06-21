@@ -13,22 +13,29 @@ class PlayingCard extends StatelessWidget {
   final String value;
   final String symbol;
   final bool draggable;
-  final double transform;
 
   PlayingCard(
       {this.id = 1,
       this.value = 'Q',
       this.symbol = 'c',
-      this.draggable = true,
-      this.transform = 0});
+      this.draggable = true});
 
   factory PlayingCard.undraggable(PlayingCard playingCard) {
     return PlayingCard(
-        id: playingCard.id,
-        value: playingCard.value,
-        symbol: playingCard.symbol,
-        draggable: false,
-        transform: playingCard.transform);
+      id: playingCard.id,
+      value: playingCard.value,
+      symbol: playingCard.symbol,
+      draggable: false,
+    );
+  }
+
+  factory PlayingCard.fromJson(Map<String, dynamic> json) {
+    return PlayingCard(
+      id: json['id'] as int,
+      value: json['value'] as String,
+      symbol: json['symbol'] as String,
+      draggable: true,
+    );
   }
 
   @override
@@ -107,7 +114,6 @@ class PlayingCard extends StatelessWidget {
     Widget card = Container(
       height: 135,
       width: 90,
-      //transform: Matrix4.rotationZ(0.1),
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(

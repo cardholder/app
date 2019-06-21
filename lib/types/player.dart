@@ -6,6 +6,8 @@ part 'player.g.dart';
 class Player {
   int id;
   String name, role;
+  @JsonKey(name: 'card_amount')
+  int remainingCards;
 
   Player(this.id, this.name, this.role);
 
