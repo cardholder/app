@@ -40,10 +40,10 @@ class MauMauState extends State<MauMau> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                PlayingCard(),
-                PlayingCard(),
-                PlayingCard(),
-                PlayingCard(),
+                PlayingCard(id: null),
+                PlayingCard(id: null),
+                PlayingCard(id: null),
+                PlayingCard(id: null),
               ],
             ),
             DragTarget(
@@ -67,7 +67,20 @@ class MauMauState extends State<MauMau> {
           children: [
             Column(
               children: <Widget>[
-                Row(children: hand),
+                DragTarget(
+                  builder: (context, List<PlayingCard> candidateData, rejectedData) {
+                    return Container(height: 135, child: Row(children: hand));
+                  },
+                  onWillAccept: (PlayingCard data) {
+                    if (data.id == null) return true;
+                    else return false;
+                  },
+                  onAccept: (PlayingCard data) {
+                    setState(() {
+                      hand.add(PlayingCard());
+                    });
+                  },
+                ),
                 Container(
                   height: 40,
                   width: MediaQuery.of(context).copyWith().size.width,
