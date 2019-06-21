@@ -20,7 +20,6 @@ class Game extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(),
-      backgroundColor: Colors.lightBlue,
       body: selectedGame,
     );
   }

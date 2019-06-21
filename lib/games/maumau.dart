@@ -15,6 +15,9 @@ class MauMauState extends State<MauMau> {
     PlayingCard(),
     PlayingCard(),
     PlayingCard(),
+    PlayingCard(),
+    PlayingCard(),
+    PlayingCard(),
   ];
   List<PlayingCard> pile = [PlayingCard.undraggable(PlayingCard())];
 
@@ -24,9 +27,8 @@ class MauMauState extends State<MauMau> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            PlayerIcon(),
             PlayerIcon(),
             PlayerIcon(),
             PlayerIcon(),
@@ -53,7 +55,6 @@ class MauMauState extends State<MauMau> {
                 return hand.contains(data);
               },
               onAccept: (PlayingCard data) {
-                print('On Accept');
                 pile.add(PlayingCard.undraggable(data));
                 hand.remove(data);
                 setState(() {});
@@ -62,33 +63,32 @@ class MauMauState extends State<MauMau> {
           ],
         ),
         Row(
-          children: [
-            Column(
-              children: <Widget>[
-                DragTarget(
-                  builder:
-                      (context, List<PlayingCard> candidateData, rejectedData) {
-                    return Container(height: 135, child: Row(children: hand));
-                  },
-                  onWillAccept: (PlayingCard data) {
-                    if (data.id == null)
-                      return true;
-                    else
-                      return false;
-                  },
-                  onAccept: (PlayingCard data) {
-                    setState(() {
-                      hand.add(PlayingCard());
-                    });
-                  },
-                ),
-                Container(
-                  height: 40,
-                  width: MediaQuery.of(context).copyWith().size.width,
-                  color: Colors.green,
-                  child: Text('Playername'),
-                ),
-              ],
+          children: <Widget>[
+            DragTarget(
+              builder:
+                  (context, List<PlayingCard> candidateData, rejectedData) {
+                return Container(
+                  height: 135,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: hand
+                        .map((f) => Positioned(
+                            left: hand.indexOf(f) *
+                                (MediaQuery.of(context).size.width /
+                                    hand.length),
+                            child: f))
+                        .toList(),
+                  ),
+                );
+              },
+              onWillAccept: (data) {
+                return true;
+              },
+              onAccept: (data) {
+                setState(() {
+                 hand.add(PlayingCard()); 
+                });
+              },
             ),
           ],
         ),

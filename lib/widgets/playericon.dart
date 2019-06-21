@@ -39,7 +39,7 @@ class PlayerIconState extends State<PlayerIcon> {
                 .toList(),
           ),
         ),
-        Text('Username', style: TextStyle(fontSize: 15)),
+        Text('Username', style: TextStyle(fontSize: 15, backgroundColor: Colors.greenAccent)),
       ],
     );
   }
