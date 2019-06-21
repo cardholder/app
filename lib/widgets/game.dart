@@ -19,6 +19,7 @@ class Game extends StatelessWidget {
         Navigator.pop(context);
     }
     return Scaffold(
+      appBar: AppBar(),
       backgroundColor: Colors.lightBlue,
       body: selectedGame,
     );

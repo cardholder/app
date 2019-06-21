@@ -1,3 +1,4 @@
+import 'package:cardholder/widgets/playericon.dart';
 import 'package:cardholder/widgets/playingcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,18 +23,15 @@ class MauMauState extends State<MauMau> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Icon(Icons.polymer),
-                  Text('Name'),
-                ],
-              ),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            PlayerIcon(),
+            PlayerIcon(),
+            PlayerIcon(),
+            PlayerIcon(),
+            PlayerIcon(),
+          ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -68,12 +66,15 @@ class MauMauState extends State<MauMau> {
             Column(
               children: <Widget>[
                 DragTarget(
-                  builder: (context, List<PlayingCard> candidateData, rejectedData) {
+                  builder:
+                      (context, List<PlayingCard> candidateData, rejectedData) {
                     return Container(height: 135, child: Row(children: hand));
                   },
                   onWillAccept: (PlayingCard data) {
-                    if (data.id == null) return true;
-                    else return false;
+                    if (data.id == null)
+                      return true;
+                    else
+                      return false;
                   },
                   onAccept: (PlayingCard data) {
                     setState(() {
