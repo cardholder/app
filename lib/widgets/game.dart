@@ -19,7 +19,6 @@ class Game extends StatelessWidget {
         Navigator.pop(context);
     }
     return Scaffold(
-      appBar: AppBar(),
       body: selectedGame,
     );
   }
