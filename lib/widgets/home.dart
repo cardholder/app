@@ -43,15 +43,6 @@ class Home extends StatelessWidget {
                 }
               },
             ),
-            Button(
-              title: 'Debug',
-              onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Game(Type.Lobby(null, 'Mau Mau', null, 6, null))),
-                    ),
-                  },
-            )
           ],
         ),
       ),

@@ -15,9 +15,9 @@ class PlayingCard extends StatelessWidget {
   final bool draggable;
 
   PlayingCard(
-      {this.id = 1,
-      this.value = 'Q',
-      this.symbol = 'c',
+      {this.id = 0,
+      this.value = 'J',
+      this.symbol = 'h',
       this.draggable = true});
 
   factory PlayingCard.undraggable(PlayingCard playingCard) {

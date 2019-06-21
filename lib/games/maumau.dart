@@ -22,8 +22,9 @@ class MauMau extends StatefulWidget {
 class MauMauState extends State<MauMau> {
   var channel;
   Player me, currentPlayer;
-  List<PlayingCard> hand;
-  List<PlayingCard> pile = [PlayingCard.undraggable(PlayingCard())];
+  List<PlayingCard> hand = List();
+  List<PlayingCard> stack = List();
+  List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
 
   @override
   void initState() {
@@ -55,6 +56,14 @@ class MauMauState extends State<MauMau> {
       if (response['current_player'] != null) {
         _setCurrentPlayer(response);
       }
+
+      if (response['remaining_cards'] != null) {
+        _setRemainingCards(response);
+      }
+
+      if (response['top_card_of_discard_pile'] != null) {
+        _addToPile(response);
+      }
     });
   }
 
@@ -78,6 +87,18 @@ class MauMauState extends State<MauMau> {
 
   Future _setCurrentPlayer(Map response) async {
     currentPlayer = Player.fromJson(response['current_player']);
+  }
+
+  Future _setRemainingCards(Map response) async {
+    stack = [
+      for (int i = 0; i < response['remaining_cards']; i++)
+        PlayingCard(id: null)
+    ];
+  }
+
+  Future _addToPile(Map response) async {
+    pile.add(PlayingCard.undraggable(
+        PlayingCard.fromJson(response['top_card_of_discard_pile'])));
   }
 
   @override
@@ -146,8 +167,8 @@ class MauMauState extends State<MauMau> {
                       ),
                     );
                   },
-                  onWillAccept: (data) {
-                    return true;
+                  onWillAccept: (PlayingCard data) {
+                    return !hand.contains(data);
                   },
                   onAccept: (data) {
                     setState(() {
