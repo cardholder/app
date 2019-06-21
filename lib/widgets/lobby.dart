@@ -127,6 +127,23 @@ class LobbyState extends State<Lobby> {
 
   @override
   Widget build(BuildContext context) {
+    Widget startButton;
+    if (_leader?.id == _myId) {
+      startButton = Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(35.0),
+            child: Button(
+              title: 'Spiel starten',
+              onPressed: () => _triggerGameStart(),
+            ),
+          ),
+        ],
+      );
+    } else {
+      startButton = Container();
+    }
+
     return Scaffold(
       appBar: cardholderappbar(context),
       body: Builder(
@@ -239,17 +256,7 @@ class LobbyState extends State<Lobby> {
                   ),
                 ],
               ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(35.0),
-                    child: Button(
-                      title: 'Spiel starten',
-                      onPressed: () => _triggerGameStart(),
-                    ),
-                  ),
-                ],
-              ),
+              startButton,
             ],
           );
         },
