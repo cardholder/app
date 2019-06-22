@@ -7,9 +7,8 @@ part of 'player.dart';
 // **************************************************************************
 
 Player _$PlayerFromJson(Map<String, dynamic> json) {
-  return Player(
-      json['id'] as int, json['name'] as String, json['role'] as String)
-    ..remainingCards = json['card_amount'] as int;
+  return Player(json['id'] as int, json['name'] as String,
+      json['role'] as String, json['card_amount'] as int);
 }
 
 Map<String, dynamic> _$PlayerToJson(Player instance) => <String, dynamic>{

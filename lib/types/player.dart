@@ -9,7 +9,7 @@ class Player {
   @JsonKey(name: 'card_amount')
   int remainingCards;
 
-  Player(this.id, this.name, this.role);
+  Player(this.id, this.name, this.role, this.remainingCards);
 
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
 
