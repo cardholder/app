@@ -14,4 +14,10 @@ class Player {
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlayerToJson(this);
+
+  @override
+  bool operator ==(covariant Player other) => other.id == id;
+
+  @override
+  int get hashCode => 18 ^ id.hashCode;
 }

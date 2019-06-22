@@ -61,8 +61,17 @@ class MauMauState extends State<MauMau> {
         _setRemainingCards(response);
       }
 
-      if (response['top_card_of_discard_pile'] != null) {
+      if (response['top_card_of_discard_pile'] != null ||
+          response['card'] != null) {
         _addToPile(response);
+      }
+
+      if (response['cards_drawn'] != null) {
+        _drawCard(response);
+      }
+
+      if (response['player'] != null) {
+        _updatePlayer(response);
       }
     });
   }
@@ -86,19 +95,53 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _setCurrentPlayer(Map response) async {
-    currentPlayer = Player.fromJson(response['current_player']);
+    setState(() {
+      currentPlayer = Player.fromJson(response['current_player']);
+    });
   }
 
   Future _setRemainingCards(Map response) async {
-    stack = [
-      for (int i = 0; i < response['remaining_cards']; i++)
-        PlayingCard(id: null)
-    ];
+    setState(() {
+      stack = [
+        for (int i = 0; i < response['remaining_cards']; i++)
+          PlayingCard(id: null)
+      ];
+    });
   }
 
   Future _addToPile(Map response) async {
-    pile.add(PlayingCard.undraggable(
-        PlayingCard.fromJson(response['top_card_of_discard_pile'])));
+    var card = response['top_card_of_discard_pile'] != null
+        ? response['top_card_of_discard_pile']
+        : response['card'];
+    pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
+  }
+
+  Future _drawCard(Map response) async {
+    setState(() {
+      hand.addAll((response['cards_drawn'] as List)
+          .map((card) => PlayingCard.fromJson(card))
+          .toList());
+    });
+  }
+
+  Future _updatePlayer(Map response) async {
+    Player player = Player.fromJson(response['player']);
+    int index = widget._lobby.players.indexOf(player);
+    setState(() {
+      widget._lobby.players[index] = player;
+    });
+  }
+
+  // Clientactions from here
+
+  Future _pickCardFromStack(PlayingCard card) async {
+    var msg = jsonEncode({'player': me.toJson()});
+    channel.sink.add(msg);
+  }
+
+  Future _putCardOnPile(PlayingCard card) async {
+    var msg = jsonEncode({'card': card.toJson(), 'player': me.toJson()});
+    channel.sink.add(msg);
   }
 
   @override
@@ -138,8 +181,9 @@ class MauMauState extends State<MauMau> {
                 return hand.contains(data);
               },
               onAccept: (PlayingCard data) {
-                pile.add(PlayingCard.undraggable(data));
-                hand.remove(data);
+                //pile.add(PlayingCard.undraggable(data));
+                //hand.remove(data);
+                _putCardOnPile(data);
                 setState(() {});
               },
             ),
@@ -170,10 +214,8 @@ class MauMauState extends State<MauMau> {
                   onWillAccept: (PlayingCard data) {
                     return !hand.contains(data);
                   },
-                  onAccept: (data) {
-                    setState(() {
-                      hand.add(PlayingCard());
-                    });
+                  onAccept: (PlayingCard data) {
+                    _pickCardFromStack(data);
                   },
                 ),
                 Container(

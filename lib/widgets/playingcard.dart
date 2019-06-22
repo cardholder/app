@@ -38,6 +38,13 @@ class PlayingCard extends StatelessWidget {
     );
   }
 
+  Map<String, dynamic> toJson() =>
+    <String, dynamic>{
+      'id': this.id,
+      'value': this.value,
+      'symbol': this.symbol
+    };
+
   @override
   Widget build(BuildContext context) {
     Widget layout;
