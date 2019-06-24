@@ -2,10 +2,10 @@ import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/lobby.dart' as Route;
 import 'package:flutter/material.dart';
 
-class GameCard extends StatelessWidget {
+class LobbyListEntry extends StatelessWidget {
   final Lobby _lobby;
 
-  GameCard(this._lobby);
+  LobbyListEntry(this._lobby);
 
   @override
   Widget build(BuildContext context) {

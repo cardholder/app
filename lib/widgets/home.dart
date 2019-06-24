@@ -18,8 +18,10 @@ class Home extends StatelessWidget {
               title: 'Lobby suchen',
               onPressed: () async {
                 if (userData.username == '') {
-                  final usernameSet = await Navigator.pushNamed(context, '/username');
-                  if (usernameSet == true) Navigator.pushNamed(context, '/lobbylist');
+                  final usernameSet =
+                      await Navigator.pushNamed(context, '/username');
+                  if (usernameSet == true)
+                    Navigator.pushNamed(context, '/lobbylist');
                 } else {
                   Navigator.pushNamed(context, '/lobbylist');
                 }
@@ -29,8 +31,10 @@ class Home extends StatelessWidget {
               title: 'Lobby erstellen',
               onPressed: () async {
                 if (userData.username == '') {
-                  final usernameSet = await Navigator.pushNamed(context, '/username');
-                  if (usernameSet == true) Navigator.pushNamed(context, '/createlobby');
+                  final usernameSet =
+                      await Navigator.pushNamed(context, '/username');
+                  if (usernameSet == true)
+                    Navigator.pushNamed(context, '/createlobby');
                 } else {
                   Navigator.pushNamed(context, '/createlobby');
                 }

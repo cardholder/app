@@ -5,14 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Player:', () {
     test('Player to Json', () {
-      var player = Player(1, 'Testname', 'leader');
-      var matcherMap = {'id': 1, 'name': 'Testname', 'role': 'leader'};
+      var player = Player(1, 'Testname', 'leader', 5);
+      var matcherMap = {'id': 1, 'name': 'Testname', 'role': 'leader', 'card_amount': 5};
 
       expect(player.toJson(), matcherMap);
     });
     test('Json to Player', () {
-      var jsonMap = {'id': 3, 'name': 'Username', 'role': 'player'};
-      var matcher = Player(3, 'Username', 'player');
+      var jsonMap = {'id': 3, 'name': 'Username', 'role': 'player', 'card_amount': 4};
+      var matcher = Player(3, 'Username', 'player', 4);
       var player = Player.fromJson(jsonMap);
 
       expect(player.id, matcher.id);

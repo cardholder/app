@@ -1,6 +1,6 @@
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_gamecard.dart';
+import 'package:cardholder/widgets/lobbylistentry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
@@ -91,7 +91,7 @@ class LobbyListState extends State<LobbyList> {
             return ListView.builder(
               itemCount: _lobbies.length,
               itemBuilder: (BuildContext context, int index) {
-                return GameCard(_lobbies[index]);
+                return LobbyListEntry(_lobbies[index]);
               },
             );
           },

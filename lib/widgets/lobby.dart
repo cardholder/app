@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/widgets/ch_playerentry.dart';
+import 'package:cardholder/widgets/game.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:flutter/services.dart';
@@ -13,6 +13,7 @@ import 'package:web_socket_channel/io.dart';
 
 class Lobby extends StatefulWidget {
   final Type.Lobby _lobby;
+
   Lobby(this._lobby);
 
   @override
@@ -26,9 +27,7 @@ class LobbyState extends State<Lobby> {
   Type.Lobby _lobby;
   int _myId;
   Player _leader;
-  Map<String, String> usernameJson = {
-    'name': userData.username
-  };
+  Map<String, String> usernameJson = {'name': userData.username};
 
   @override
   void initState() {
@@ -49,7 +48,7 @@ class LobbyState extends State<Lobby> {
         "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
     channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
-      print(message);
+      print(message); //TODO remove
       Map<String, dynamic> response = jsonDecode(message);
       if (response['your_id'] != null) {
         _myId = response['your_id'];
@@ -57,7 +56,9 @@ class LobbyState extends State<Lobby> {
         _setPlayers(response);
       } else if (response['lobby'] != null) {
         //TODO Lobbyinfos abrufen wenn join über Link
-      } else if (response['message'] != null) Navigator.pop(context);
+      } else if (response['message'] != null) {
+        _updateStatus(response);
+      }
     });
   }
 
@@ -69,6 +70,20 @@ class LobbyState extends State<Lobby> {
       });
       _leader =
           (_lobby.players.firstWhere((player) => player.role == 'leader'));
+    }
+  }
+
+  void _updateStatus(Map response) {
+    switch (response['message']) {
+      case 'You got kicked!':
+        Navigator.pop(context);
+        break;
+      case 'Lobby is full!':
+        Navigator.pop(context);
+        break;
+      case 'Game is started':
+        _startGame();
+        break;
     }
   }
 
@@ -95,8 +110,40 @@ class LobbyState extends State<Lobby> {
     );
   }
 
+  void _triggerGameStart() {
+    if (_leader.id == _myId && channel != null) {
+      channel.sink.add(jsonEncode({'message': 'start'}));
+    }
+  }
+
+  void _startGame() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Game(_lobby),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget startButton;
+    if (_leader?.id == _myId) {
+      startButton = Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(35.0),
+            child: Button(
+              title: 'Spiel starten',
+              onPressed: () => _triggerGameStart(),
+            ),
+          ),
+        ],
+      );
+    } else {
+      startButton = Container();
+    }
+
     return Scaffold(
       appBar: cardholderappbar(context),
       body: Builder(
@@ -126,7 +173,7 @@ class LobbyState extends State<Lobby> {
                                 onTap: () {
                                   Clipboard.setData(new ClipboardData(
                                       text:
-                                          'cardholder.surge.sh/${_lobby?.id}'));
+                                          'http://cardholder.surge.sh/${_lobby?.id}'));
                                   Scaffold.of(context).showSnackBar(SnackBar(
                                     content: Text('Lobbylink kopiert.'),
                                     backgroundColor: Colors.green,
@@ -209,17 +256,7 @@ class LobbyState extends State<Lobby> {
                   ),
                 ],
               ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(35.0),
-                    child: Button(
-                      title: 'Spiel starten',
-                      onPressed: null,
-                    ),
-                  ),
-                ],
-              ),
+              startButton,
             ],
           );
         },
