@@ -120,7 +120,7 @@ class LobbyState extends State<Lobby> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => Game(_lobby),
+        builder: (context) => Game(_lobby, _myId),
       ),
     );
   }

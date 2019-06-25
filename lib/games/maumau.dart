@@ -10,8 +10,9 @@ import 'package:web_socket_channel/io.dart';
 
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
+  final int _myId;
 
-  MauMau(this._lobby);
+  MauMau(this._lobby, this._myId);
 
   @override
   State<StatefulWidget> createState() {
@@ -77,12 +78,13 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _initPlayers(Map response) async {
-    widget._lobby.players = (response['players'] as List)
+    List<Player> players = (response['players'] as List)
         .map((player) => Player.fromJson(player))
         .toList();
+    me = players.firstWhere((player) => player.id == widget._myId);
+    players.remove(me);
     setState(() {
-      me = widget._lobby.players[0];
-      widget._lobby.players.remove(me);
+      widget._lobby.players = players;
     });
   }
 
@@ -222,7 +224,10 @@ class MauMauState extends State<MauMau> {
                   height: 35,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.greenAccent,
-                  child: Text('Username'),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Text('me?.name'),
+                  ),
                 ),
               ],
             ),
