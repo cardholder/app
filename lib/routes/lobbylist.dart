@@ -84,18 +84,19 @@ class LobbyListState extends State<LobbyList> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: cardholderappbar(context),
-        body: Builder(
-          builder: (BuildContext context) {
-            scaffoldContext = context;
-            return ListView.builder(
-              itemCount: _lobbies.length,
-              itemBuilder: (BuildContext context, int index) {
-                return LobbyListEntry(_lobbies[index]);
-              },
-            );
-          },
-        ));
+      appBar: cardholderappbar(context),
+      body: Builder(
+        builder: (BuildContext context) {
+          scaffoldContext = context;
+          return ListView.builder(
+            itemCount: _lobbies.length,
+            itemBuilder: (BuildContext context, int index) {
+              return LobbyListEntry(_lobbies[index]);
+            },
+          );
+        },
+      ),
+    );
   }
 
   void displaySnackBar(String content) {

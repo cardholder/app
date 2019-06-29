@@ -8,6 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 
+final symbols = {
+  'h': '♥',
+  's': '♠',
+  'd': '♦',
+  'c': '♣',
+};
+
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
   final int _myId;
@@ -22,6 +29,7 @@ class MauMau extends StatefulWidget {
 
 class MauMauState extends State<MauMau> {
   var channel;
+  String nextSymbol;
   Player me, currentPlayer;
   List<PlayingCard> hand = List();
   List<PlayingCard> stack = List();
@@ -74,6 +82,14 @@ class MauMauState extends State<MauMau> {
       if (response['player'] != null) {
         _updatePlayer(response);
       }
+
+      if (response['symbol'] != null) {
+        _updateSymbol(response);
+      }
+
+      if (response['message'] != null) {
+        _updateStatus(response);
+      }
     });
   }
 
@@ -115,7 +131,10 @@ class MauMauState extends State<MauMau> {
     var card = response['top_card_of_discard_pile'] != null
         ? response['top_card_of_discard_pile']
         : response['card'];
-    pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
+    setState(() {
+      pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
+      nextSymbol = null;
+    });
   }
 
   Future _drawCard(Map response) async {
@@ -134,6 +153,24 @@ class MauMauState extends State<MauMau> {
     });
   }
 
+  Future _updateSymbol(Map response) async {
+    setState(() {
+      nextSymbol = response['symbol'];
+    });
+  }
+
+  Future _updateStatus(Map response) async {
+    switch (response['message']) {
+      case 'Sieger':
+        _winnerDialog(response['player_id']);
+        break;
+      case 'Wuensch dir was':
+        _selectCard();
+        break;
+      default:
+    }
+  }
+
   // Clientactions from here
 
   Future _pickCardFromStack(PlayingCard card) async {
@@ -144,6 +181,57 @@ class MauMauState extends State<MauMau> {
   Future _putCardOnPile(PlayingCard card) async {
     var msg = jsonEncode({'card': card.toJson(), 'player': me.toJson()});
     channel.sink.add(msg);
+  }
+
+  Future _selectCard() async {
+    List<Widget> options = List();
+    symbols.forEach((k, v) {
+      options.add(GestureDetector(
+        child: Text(v, style: TextStyle(fontSize: 35)),
+        onTap: () => Navigator.pop(context, k),
+      ));
+    });
+    var nextColor = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('Farbe wählen:'),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: options,
+            ),
+          ],
+        );
+      },
+    );
+    print(nextColor);
+    var msg = jsonEncode({'symbol': nextColor});
+    channel.sink.add(msg);
+  }
+
+  Future _winnerDialog(int playerId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('Sieger: $playerId'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text('Zur Liste'),
+              onPressed: () => Navigator.popUntil(
+                  context, ModalRoute.withName('/lobbylist')),
+            ),
+            SimpleDialogOption(
+              child: Text('Noch eine Runde'),
+              onPressed: () =>
+                  Navigator.popUntil(context, ModalRoute.withName('/lobby')),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -167,11 +255,19 @@ class MauMauState extends State<MauMau> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Stack(
+              overflow: Overflow.visible,
               children: <Widget>[
                 PlayingCard(id: null),
                 PlayingCard(id: null),
                 PlayingCard(id: null),
                 PlayingCard(id: null),
+                if (nextSymbol != null) ...{
+                  Positioned(
+                    left: 260,
+                    top: 0,
+                    child: Text(symbols[nextSymbol]),
+                  )
+                }
               ],
             ),
             DragTarget(
@@ -203,11 +299,13 @@ class MauMauState extends State<MauMau> {
                       width: MediaQuery.of(context).size.width,
                       child: Stack(
                         children: hand
-                                ?.map((f) => Positioned(
-                                    left: hand.indexOf(f) *
-                                        (MediaQuery.of(context).size.width /
-                                            hand.length),
-                                    child: f))
+                                ?.map(
+                                  (f) => Positioned(
+                                      left: hand.indexOf(f) *
+                                          (MediaQuery.of(context).size.width /
+                                              hand.length),
+                                      child: f),
+                                )
                                 ?.toList() ??
                             [],
                       ),
