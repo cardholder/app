@@ -1,16 +1,14 @@
 import 'dart:convert';
-
+import 'package:cardholder/widgets/ch_button.dart';
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/widgets/ch_appbar.dart';
 import 'package:cardholder/widgets/ch_formfield.dart';
-import 'package:cardholder/widgets/lobby.dart' as Route;
+import 'package:cardholder/routes/lobby.dart' as Route;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
-
-import 'ch_button.dart';
 
 class LobbySettings extends StatefulWidget {
   LobbySettings({Key key}) : super(key: key);
