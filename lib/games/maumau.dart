@@ -27,7 +27,7 @@ class MauMauState extends State<MauMau> {
   Player me, currentPlayer;
   Color bottomAccentColor = Colors.grey;
   List<PlayingCard> hand = List();
-  List<PlayingCard> stack = List();
+  List<PlayingCard> stack = [PlayingCard(id: null)];
   List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
 
   @override
@@ -107,7 +107,8 @@ class MauMauState extends State<MauMau> {
   Future _setCurrentPlayer(Map response) async {
     setState(() {
       currentPlayer = Player.fromJson(response['current_player']);
-      bottomAccentColor = (currentPlayer == me) ? Colors.greenAccent : Colors.grey;
+      bottomAccentColor =
+          (currentPlayer == me) ? Colors.greenAccent : Colors.grey;
     });
   }
 
@@ -247,10 +248,7 @@ class MauMauState extends State<MauMau> {
             Stack(
               overflow: Overflow.visible,
               children: <Widget>[
-                PlayingCard(id: null),
-                PlayingCard(id: null),
-                PlayingCard(id: null),
-                PlayingCard(id: null),
+                ...stack,
                 if (nextSymbol != null) ...{
                   Positioned(
                     left: 260,
@@ -269,8 +267,6 @@ class MauMauState extends State<MauMau> {
                 return hand.contains(data);
               },
               onAccept: (PlayingCard data) {
-                //pile.add(PlayingCard.undraggable(data));
-                //hand.remove(data);
                 _putCardOnPile(data);
                 setState(() {});
               },
