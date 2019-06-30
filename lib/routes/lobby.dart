@@ -48,7 +48,6 @@ class LobbyState extends State<Lobby> {
     channel = IOWebSocketChannel.connect(url + 'lobby/${_lobby.id}/');
     channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
-      print(message); //TODO remove
       Map<String, dynamic> response = jsonDecode(message);
       if (response['your_id'] != null) {
         _myId = response['your_id'];
@@ -175,7 +174,7 @@ class LobbyState extends State<Lobby> {
                                       text:
                                           'http://cardholder.surge.sh/${_lobby?.id}'));
                                   Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('Lobbylink kopiert.'),
+                                    content: Text('Lobbylink kopiert'),
                                     backgroundColor: Colors.green,
                                   ));
                                 },
