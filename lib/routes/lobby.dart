@@ -191,37 +191,44 @@ class LobbyState extends State<Lobby> {
                     ),
                   ),
                   Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Card(
-                        margin:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Kartenspiel'),
-                              Text(
-                                _lobby?.game,
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ],
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Card(
+                          margin:
+                              EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Kartenspiel'),
+                                Text(
+                                  _lobby?.game,
+                                  style: Theme.of(context).textTheme.body2,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Card(
-                        margin: EdgeInsets.only(right: 15, bottom: 15),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Sichtbarkeit'),
-                              Text(
-                                visibilityOptions[_lobby?.visibility],
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ],
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Card(
+                          margin: EdgeInsets.only(right: 15, bottom: 15),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Sichtbarkeit'),
+                                Text(
+                                  visibilityOptions[_lobby?.visibility],
+                                  style: Theme.of(context).textTheme.body2,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
