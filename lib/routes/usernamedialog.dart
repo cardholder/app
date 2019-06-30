@@ -15,7 +15,7 @@ class UsernameDialog extends StatelessWidget {
       Navigator.pop(context, true);
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Anzeigename darf nicht leer sein und maximal 20 Zeichen haben.'),
+        content: Text('Anzeigename darf nicht leer sein, maximal 20 Zeichen haben und darf nur aus Buchstaben und Zahlen bestehen.'),
         backgroundColor: Colors.red,
       ));
     }

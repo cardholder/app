@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
+import 'package:cardholder/types/constants.dart';
 
 class LobbyList extends StatefulWidget {
   LobbyList({Key key}) : super(key: key);
@@ -25,7 +26,7 @@ class LobbyListState extends State<LobbyList> {
     super.initState();
     try {
       channel = IOWebSocketChannel.connect(
-          "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+          url + 'lobbylist/');
     } catch (SocketException) {
       displaySnackBar('Keine Verbindung zum Server');
     }

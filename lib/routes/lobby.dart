@@ -10,6 +10,7 @@ import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:flutter/services.dart';
 import 'package:flutter_alert/flutter_alert.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:cardholder/types/constants.dart';
 
 class Lobby extends StatefulWidget {
   final Type.Lobby _lobby;
@@ -44,8 +45,7 @@ class LobbyState extends State<Lobby> {
   }
 
   Future _subscribeLobby() async {
-    channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
+    channel = IOWebSocketChannel.connect(url + 'lobby/${_lobby.id}/');
     channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
       print(message); //TODO remove

@@ -7,13 +7,7 @@ import 'package:cardholder/widgets/playingcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
-
-final symbols = {
-  'h': '♥',
-  's': '♠',
-  'd': '♦',
-  'c': '♣',
-};
+import 'package:cardholder/types/constants.dart';
 
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
@@ -38,8 +32,7 @@ class MauMauState extends State<MauMau> {
   @override
   void initState() {
     super.initState();
-    channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/maumau/${widget._lobby.id}/");
+    channel = IOWebSocketChannel.connect(url + 'maumau/${widget._lobby.id}/');
     _subscribeGameChannel();
   }
 
