@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:cardholder/widgets/ch_button.dart';
+import 'package:cardholder/widgets/button.dart';
 import 'package:cardholder/types/lobby.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_formfield.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
+import 'package:cardholder/widgets/cardholderformfield.dart';
 import 'package:cardholder/routes/lobby.dart' as Route;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

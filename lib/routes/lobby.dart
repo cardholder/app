@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/types/player.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_button.dart';
-import 'package:cardholder/widgets/ch_playerentry.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
+import 'package:cardholder/widgets/button.dart';
+import 'package:cardholder/widgets/playerentry.dart';
 import 'package:cardholder/routes/game.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;

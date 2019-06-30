@@ -1,5 +1,5 @@
 import 'package:cardholder/types/lobby.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
 import 'package:cardholder/widgets/lobbylistentry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,8 +25,7 @@ class LobbyListState extends State<LobbyList> {
   void initState() {
     super.initState();
     try {
-      channel = IOWebSocketChannel.connect(
-          url + 'lobbylist/');
+      channel = IOWebSocketChannel.connect(url + 'lobbylist/');
     } catch (SocketException) {
       displaySnackBar('Keine Verbindung zum Server');
     }
