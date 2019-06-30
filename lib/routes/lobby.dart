@@ -218,7 +218,7 @@ class LobbyState extends State<Lobby> {
                             children: <Widget>[
                               Text('Sichtbarkeit'),
                               Text(
-                                _lobby?.visibility,
+                                visibilityOptions[_lobby?.visibility],
                                 style: Theme.of(context).textTheme.body2,
                               ),
                             ],

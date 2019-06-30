@@ -3,10 +3,9 @@ const String url =
 
 const List<String> cardgameOptions = ['Mau Mau'];
 const List<String> maxPlayerOptions = ['2', '3', '4', '5', '6'];
-const List<String> visibilityOptions = ['Öffentlich', 'Privat'];
-const Map<String, String> visibilityTranslate = {'Öffentlich': 'public', 'Privat': 'private'};
+final Map<String, String> visibilityOptions = const {'public': 'Öffentlich', 'private': 'Privat'};
 
-const Map symbols = {
+final Map symbols = const {
   'h': '♥',
   's': '♠',
   'd': '♦',

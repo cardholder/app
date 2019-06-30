@@ -68,7 +68,8 @@ class LobbySettingsState extends State<LobbySettings> {
   }
 
   void visibilityCallback(var option) {
-    createLobbyMsg['visibility'] = visibilityTranslate[option];
+    var optionKey = visibilityOptions.keys.firstWhere((k) => visibilityOptions[k] == option, orElse: () => null);
+    createLobbyMsg['visibility'] = optionKey;
   }
 
   @override
@@ -92,7 +93,9 @@ class LobbySettingsState extends State<LobbySettings> {
                     CardholderFormField(
                         'Spieleranzahl', maxPlayerOptions, maxPlayerCallback),
                     CardholderFormField(
-                        'Sichtbarkeit', visibilityOptions, visibilityCallback),
+                        'Sichtbarkeit',
+                        List.from(visibilityOptions.values),
+                        visibilityCallback),
                   ],
                 ),
                 Column(
