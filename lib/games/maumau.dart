@@ -25,6 +25,7 @@ class MauMauState extends State<MauMau> {
   var channel;
   String nextSymbol;
   Player me, currentPlayer;
+  Color bottomAccentColor = Colors.grey;
   List<PlayingCard> hand = List();
   List<PlayingCard> stack = List();
   List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
@@ -106,6 +107,7 @@ class MauMauState extends State<MauMau> {
   Future _setCurrentPlayer(Map response) async {
     setState(() {
       currentPlayer = Player.fromJson(response['current_player']);
+      bottomAccentColor = (currentPlayer == me) ? Colors.greenAccent : Colors.grey;
     });
   }
 
@@ -309,10 +311,10 @@ class MauMauState extends State<MauMau> {
                 Container(
                   height: 35,
                   width: MediaQuery.of(context).size.width,
-                  color: Colors.greenAccent,
+                  color: bottomAccentColor,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15),
-                    child: Text('me?.name'),
+                    child: Text(me?.name ?? ''),
                   ),
                 ),
               ],
