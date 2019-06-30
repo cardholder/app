@@ -62,7 +62,7 @@ class MauMauState extends State<MauMau> {
         _setRemainingCards(response);
       }
 
-      if (response['top_card_of_discard_pile']) {
+      if (response['top_card_of_discard_pile'] != null) {
         _addToPile(response);
       }
 
