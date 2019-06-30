@@ -210,14 +210,9 @@ class MauMauState extends State<MauMau> {
           title: Text('Sieger: $playerId'),
           children: <Widget>[
             SimpleDialogOption(
-              child: Text('Zur Liste'),
-              onPressed: () => Navigator.popUntil(
-                  context, ModalRoute.withName('/lobbylist')),
-            ),
-            SimpleDialogOption(
-              child: Text('Noch eine Runde'),
+              child: Text('Zurück zur Lobby'),
               onPressed: () =>
-                  Navigator.popUntil(context, ModalRoute.withName('/lobby')),
+                  Navigator.pushReplacementNamed(context, '/lobby'),
             ),
           ],
         );
@@ -308,9 +303,20 @@ class MauMauState extends State<MauMau> {
                   height: 35,
                   width: MediaQuery.of(context).size.width,
                   color: bottomAccentColor,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Text(me?.name ?? ''),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(me?.name ?? ''),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () =>
+                            Navigator.pushReplacementNamed(context, '/lobby'),
+                      )
+                    ],
                   ),
                 ),
               ],
