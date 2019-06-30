@@ -1,10 +1,11 @@
 import 'package:cardholder/types/lobby.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
 import 'package:cardholder/widgets/lobbylistentry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
+import 'package:cardholder/types/constants.dart';
 
 class LobbyList extends StatefulWidget {
   LobbyList({Key key}) : super(key: key);
@@ -24,8 +25,7 @@ class LobbyListState extends State<LobbyList> {
   void initState() {
     super.initState();
     try {
-      channel = IOWebSocketChannel.connect(
-          "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobbylist/");
+      channel = IOWebSocketChannel.connect(url + 'lobbylist/');
     } catch (SocketException) {
       displaySnackBar('Keine Verbindung zum Server');
     }
@@ -84,18 +84,19 @@ class LobbyListState extends State<LobbyList> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: cardholderappbar(context),
-        body: Builder(
-          builder: (BuildContext context) {
-            scaffoldContext = context;
-            return ListView.builder(
-              itemCount: _lobbies.length,
-              itemBuilder: (BuildContext context, int index) {
-                return LobbyListEntry(_lobbies[index]);
-              },
-            );
-          },
-        ));
+      appBar: cardholderappbar(context),
+      body: Builder(
+        builder: (BuildContext context) {
+          scaffoldContext = context;
+          return ListView.builder(
+            itemCount: _lobbies.length,
+            itemBuilder: (BuildContext context, int index) {
+              return LobbyListEntry(_lobbies[index]);
+            },
+          );
+        },
+      ),
+    );
   }
 
   void displaySnackBar(String content) {

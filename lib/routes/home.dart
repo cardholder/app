@@ -1,6 +1,6 @@
 import 'package:cardholder/singletons/userdata.dart';
-import 'package:cardholder/widgets/ch_button.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
+import 'package:cardholder/widgets/button.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

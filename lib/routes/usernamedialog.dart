@@ -1,6 +1,6 @@
 import 'package:cardholder/singletons/userdata.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_button.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
+import 'package:cardholder/widgets/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,14 +15,17 @@ class UsernameDialog extends StatelessWidget {
       Navigator.pop(context, true);
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Anzeigename darf nicht leer sein und maximal 20 Zeichen haben.'),
+        content: Text(
+            'Anzeigename darf nicht leer sein, maximal 20 Zeichen haben und darf nur aus Buchstaben und Zahlen bestehen.'),
         backgroundColor: Colors.red,
       ));
     }
   }
 
   bool _isValid(String username) {
-    return (username.length > 0 && username.length < 20 && isAlphanumeric(username));
+    return (username.length > 0 &&
+        username.length < 20 &&
+        isAlphanumeric(username));
   }
 
   @override

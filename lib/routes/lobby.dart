@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'package:cardholder/singletons/userdata.dart';
 import 'package:cardholder/types/player.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_button.dart';
-import 'package:cardholder/widgets/ch_playerentry.dart';
-import 'package:cardholder/widgets/game.dart';
+import 'package:cardholder/widgets/cardholderappbar.dart';
+import 'package:cardholder/widgets/button.dart';
+import 'package:cardholder/widgets/playerentry.dart';
+import 'package:cardholder/routes/game.dart';
 import 'package:flutter/material.dart';
 import 'package:cardholder/types/lobby.dart' as Type;
 import 'package:flutter/services.dart';
 import 'package:flutter_alert/flutter_alert.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:cardholder/types/constants.dart';
 
 class Lobby extends StatefulWidget {
   final Type.Lobby _lobby;
@@ -44,11 +45,9 @@ class LobbyState extends State<Lobby> {
   }
 
   Future _subscribeLobby() async {
-    channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/lobby/${_lobby.id}/");
+    channel = IOWebSocketChannel.connect(url + 'lobby/${_lobby.id}/');
     channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
-      print(message); //TODO remove
       Map<String, dynamic> response = jsonDecode(message);
       if (response['your_id'] != null) {
         _myId = response['your_id'];
@@ -120,7 +119,7 @@ class LobbyState extends State<Lobby> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => Game(_lobby),
+        builder: (context) => Game(_lobby, _myId),
       ),
     );
   }
@@ -175,7 +174,7 @@ class LobbyState extends State<Lobby> {
                                       text:
                                           'http://cardholder.surge.sh/${_lobby?.id}'));
                                   Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('Lobbylink kopiert.'),
+                                    content: Text('Lobbylink kopiert'),
                                     backgroundColor: Colors.green,
                                   ));
                                 },
@@ -191,37 +190,44 @@ class LobbyState extends State<Lobby> {
                     ),
                   ),
                   Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Card(
-                        margin:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Kartenspiel'),
-                              Text(
-                                _lobby?.game,
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ],
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Card(
+                          margin:
+                              EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Kartenspiel'),
+                                Text(
+                                  _lobby?.game,
+                                  style: Theme.of(context).textTheme.body2,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Card(
-                        margin: EdgeInsets.only(right: 15, bottom: 15),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Sichtbarkeit'),
-                              Text(
-                                _lobby?.visibility,
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ],
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Card(
+                          margin: EdgeInsets.only(right: 15, bottom: 15),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Sichtbarkeit'),
+                                Text(
+                                  visibilityOptions[_lobby?.visibility],
+                                  style: Theme.of(context).textTheme.body2,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

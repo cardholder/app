@@ -7,11 +7,13 @@ import 'package:cardholder/widgets/playingcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:cardholder/types/constants.dart';
 
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
+  final int _myId;
 
-  MauMau(this._lobby);
+  MauMau(this._lobby, this._myId);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,16 +23,17 @@ class MauMau extends StatefulWidget {
 
 class MauMauState extends State<MauMau> {
   var channel;
+  String nextSymbol;
   Player me, currentPlayer;
+  Color bottomAccentColor = Colors.grey;
   List<PlayingCard> hand = List();
-  List<PlayingCard> stack = List();
+  List<PlayingCard> stack = [PlayingCard(id: null)];
   List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
 
   @override
   void initState() {
     super.initState();
-    channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/maumau/${widget._lobby.id}/");
+    channel = IOWebSocketChannel.connect(url + 'maumau/${widget._lobby.id}/');
     _subscribeGameChannel();
   }
 
@@ -43,7 +46,6 @@ class MauMauState extends State<MauMau> {
   Future _subscribeGameChannel() async {
     channel.sink.add(jsonEncode({'player_id': widget._lobby.players[0].id}));
     channel.stream.listen((message) {
-      print(message);
       Map<String, dynamic> response = jsonDecode(message);
       if (response['players'] != null) {
         _initPlayers(response);
@@ -61,8 +63,7 @@ class MauMauState extends State<MauMau> {
         _setRemainingCards(response);
       }
 
-      if (response['top_card_of_discard_pile'] != null ||
-          response['card'] != null) {
+      if (response['top_card_of_discard_pile'] != null) {
         _addToPile(response);
       }
 
@@ -73,16 +74,25 @@ class MauMauState extends State<MauMau> {
       if (response['player'] != null) {
         _updatePlayer(response);
       }
+
+      if (response['symbol'] != null) {
+        _updateSymbol(response);
+      }
+
+      if (response['message'] != null) {
+        _updateStatus(response);
+      }
     });
   }
 
   Future _initPlayers(Map response) async {
-    widget._lobby.players = (response['players'] as List)
+    List<Player> players = (response['players'] as List)
         .map((player) => Player.fromJson(player))
         .toList();
+    me = players.firstWhere((player) => player.id == widget._myId);
+    players.remove(me);
     setState(() {
-      me = widget._lobby.players[0];
-      widget._lobby.players.remove(me);
+      widget._lobby.players = players;
     });
   }
 
@@ -97,6 +107,8 @@ class MauMauState extends State<MauMau> {
   Future _setCurrentPlayer(Map response) async {
     setState(() {
       currentPlayer = Player.fromJson(response['current_player']);
+      bottomAccentColor =
+          (currentPlayer == me) ? Colors.greenAccent : Colors.grey;
     });
   }
 
@@ -110,10 +122,11 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _addToPile(Map response) async {
-    var card = response['top_card_of_discard_pile'] != null
-        ? response['top_card_of_discard_pile']
-        : response['card'];
-    pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
+    var card = response['top_card_of_discard_pile'];
+    setState(() {
+      pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
+      nextSymbol = null;
+    });
   }
 
   Future _drawCard(Map response) async {
@@ -132,6 +145,24 @@ class MauMauState extends State<MauMau> {
     });
   }
 
+  Future _updateSymbol(Map response) async {
+    setState(() {
+      nextSymbol = response['symbol'];
+    });
+  }
+
+  Future _updateStatus(Map response) async {
+    switch (response['message']) {
+      case 'Sieger':
+        _winnerDialog(response['player_id']);
+        break;
+      case 'Wuensch dir was':
+        _selectCard();
+        break;
+      default:
+    }
+  }
+
   // Clientactions from here
 
   Future _pickCardFromStack(PlayingCard card) async {
@@ -142,6 +173,51 @@ class MauMauState extends State<MauMau> {
   Future _putCardOnPile(PlayingCard card) async {
     var msg = jsonEncode({'card': card.toJson(), 'player': me.toJson()});
     channel.sink.add(msg);
+  }
+
+  Future _selectCard() async {
+    List<Widget> options = List();
+    symbols.forEach((k, v) {
+      options.add(GestureDetector(
+        child: Text(v, style: TextStyle(fontSize: 35)),
+        onTap: () => Navigator.pop(context, k),
+      ));
+    });
+    var nextColor = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('Farbe wählen:'),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: options,
+            ),
+          ],
+        );
+      },
+    );
+    var msg = jsonEncode({'symbol': nextColor});
+    channel.sink.add(msg);
+  }
+
+  Future _winnerDialog(int playerId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text('Sieger: $playerId'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text('Zurück zur Lobby'),
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, '/lobby'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -165,11 +241,16 @@ class MauMauState extends State<MauMau> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Stack(
+              overflow: Overflow.visible,
               children: <Widget>[
-                PlayingCard(id: null),
-                PlayingCard(id: null),
-                PlayingCard(id: null),
-                PlayingCard(id: null),
+                ...stack,
+                if (nextSymbol != null) ...{
+                  Positioned(
+                    left: 260,
+                    top: 0,
+                    child: Text(symbols[nextSymbol]),
+                  )
+                }
               ],
             ),
             DragTarget(
@@ -181,8 +262,6 @@ class MauMauState extends State<MauMau> {
                 return hand.contains(data);
               },
               onAccept: (PlayingCard data) {
-                //pile.add(PlayingCard.undraggable(data));
-                //hand.remove(data);
                 _putCardOnPile(data);
                 setState(() {});
               },
@@ -201,11 +280,13 @@ class MauMauState extends State<MauMau> {
                       width: MediaQuery.of(context).size.width,
                       child: Stack(
                         children: hand
-                                ?.map((f) => Positioned(
-                                    left: hand.indexOf(f) *
-                                        (MediaQuery.of(context).size.width /
-                                            hand.length),
-                                    child: f))
+                                ?.map(
+                                  (f) => Positioned(
+                                      left: hand.indexOf(f) *
+                                          (MediaQuery.of(context).size.width /
+                                              hand.length),
+                                      child: f),
+                                )
                                 ?.toList() ??
                             [],
                       ),
@@ -221,8 +302,22 @@ class MauMauState extends State<MauMau> {
                 Container(
                   height: 35,
                   width: MediaQuery.of(context).size.width,
-                  color: Colors.greenAccent,
-                  child: Text('Username'),
+                  color: bottomAccentColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(me?.name ?? ''),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () =>
+                            Navigator.pushReplacementNamed(context, '/lobby'),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),

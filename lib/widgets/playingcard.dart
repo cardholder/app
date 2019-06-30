@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-final symbols = {
-  'd': '♦',
-  'c': '♣',
-  's': '♠',
-  'h': '♥',
-};
+import 'package:cardholder/types/constants.dart';
 
 class PlayingCard extends StatelessWidget {
   final int id;
@@ -16,8 +10,8 @@ class PlayingCard extends StatelessWidget {
 
   PlayingCard(
       {this.id = 0,
-      this.value = 'J',
-      this.symbol = 'h',
+      this.value = '',
+      this.symbol = '',
       this.draggable = true});
 
   factory PlayingCard.undraggable(PlayingCard playingCard) {

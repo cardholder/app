@@ -1,5 +1,5 @@
 import 'package:cardholder/types/lobby.dart';
-import 'package:cardholder/widgets/lobby.dart' as Route;
+import 'package:cardholder/routes/lobby.dart' as Route;
 import 'package:flutter/material.dart';
 
 class LobbyListEntry extends StatelessWidget {

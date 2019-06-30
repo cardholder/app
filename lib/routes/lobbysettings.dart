@@ -1,16 +1,15 @@
 import 'dart:convert';
-
+import 'package:cardholder/widgets/button.dart';
 import 'package:cardholder/types/lobby.dart';
-import 'package:cardholder/widgets/ch_appbar.dart';
-import 'package:cardholder/widgets/ch_formfield.dart';
-import 'package:cardholder/widgets/lobby.dart' as Route;
+import 'package:cardholder/widgets/cardholderappbar.dart';
+import 'package:cardholder/widgets/cardholderformfield.dart';
+import 'package:cardholder/routes/lobby.dart' as Route;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
-
-import 'ch_button.dart';
+import 'package:cardholder/types/constants.dart';
 
 class LobbySettings extends StatefulWidget {
   LobbySettings({Key key}) : super(key: key);
@@ -28,38 +27,36 @@ class LobbySettingsState extends State<LobbySettings> {
     'max_players': null
   };
   var channel;
-  var cardgameOptions = ['Mau Mau', 'Durak'];
-  var maxPlayerOptions = ['2', '3', '4', '5', '6'];
-  var visibilityOptions = ['public', 'private'];
   var scaffoldContext;
 
   _createLobby(Map createLobbyMsg) {
     Lobby _newLobby = Lobby.fromJson(createLobbyMsg);
     String id;
-    channel = IOWebSocketChannel.connect(
-        "ws://ec2-18-185-18-129.eu-central-1.compute.amazonaws.com:8000/create/");
+    channel = IOWebSocketChannel.connect(url + 'create/');
 
     channel.sink.add(json.encode(createLobbyMsg));
-    channel.stream.listen((response) {
-      channel.sink.close();
-      id = jsonDecode(response)['id'] as String;
-      if (id.length == 7) {
-        _newLobby.id = id;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Route.Lobby(_newLobby),
-          ),
-        );
-      } else {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Fehler beim Erstellen einer Lobby'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    });
+    channel.stream.listen(
+      (response) {
+        channel.sink.close();
+        id = jsonDecode(response)['id'] as String;
+        if (id.length == 7) {
+          _newLobby.id = id;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Route.Lobby(_newLobby),
+            ),
+          );
+        } else {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Fehler beim Erstellen einer Lobby'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+    );
   }
 
   void cardgameCallback(var option) {
@@ -71,7 +68,8 @@ class LobbySettingsState extends State<LobbySettings> {
   }
 
   void visibilityCallback(var option) {
-    createLobbyMsg['visibility'] = option;
+    var optionKey = visibilityOptions.keys.firstWhere((k) => visibilityOptions[k] == option, orElse: () => null);
+    createLobbyMsg['visibility'] = optionKey;
   }
 
   @override
@@ -95,16 +93,19 @@ class LobbySettingsState extends State<LobbySettings> {
                     CardholderFormField(
                         'Spieleranzahl', maxPlayerOptions, maxPlayerCallback),
                     CardholderFormField(
-                        'Sichtbarkeit', visibilityOptions, visibilityCallback),
+                        'Sichtbarkeit',
+                        List.from(visibilityOptions.values),
+                        visibilityCallback),
                   ],
                 ),
                 Column(
                   children: <Widget>[
                     Button(
-                        title: 'Lobby erstellen',
-                        onPressed: () async {
-                          _createLobby(createLobbyMsg);
-                        }),
+                      title: 'Lobby erstellen',
+                      onPressed: () async {
+                        _createLobby(createLobbyMsg);
+                      },
+                    ),
                   ],
                 ),
               ],
