@@ -63,8 +63,7 @@ class MauMauState extends State<MauMau> {
         _setRemainingCards(response);
       }
 
-      if (response['top_card_of_discard_pile'] != null ||
-          response['card'] != null) {
+      if (response['top_card_of_discard_pile']) {
         _addToPile(response);
       }
 
@@ -121,9 +120,7 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _addToPile(Map response) async {
-    var card = response['top_card_of_discard_pile'] != null
-        ? response['top_card_of_discard_pile']
-        : response['card'];
+    var card = response['top_card_of_discard_pile'];
     setState(() {
       pile.add(PlayingCard.undraggable(PlayingCard.fromJson(card)));
       nextSymbol = null;
