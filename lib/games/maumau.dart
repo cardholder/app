@@ -228,22 +228,7 @@ class MauMauState extends State<MauMau> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Container(
-                      height: 10,
-                      child: Stack(
-                        overflow: Overflow.visible,
-                        children: <Widget>[
-                          Positioned(
-                            top: -30,
-                            left: MediaQuery.of(context).size.width / 3,
-                            child: Transform.scale(
-                              scale: 4,
-                              child: Icon(icon),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    Icon(icon, size: 45),
                     Text(text),
                     Button(
                       onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false),
@@ -359,7 +344,8 @@ class MauMauState extends State<MauMau> {
                         ),
                         IconButton(
                           icon: Icon(Icons.clear),
-                          onPressed: () => Navigator.pop(context),
+                          //onPressed: () => Navigator.pop(context),
+                          onPressed: () => _winnerDialog(0),
                         ),
                       ],
                     ),
