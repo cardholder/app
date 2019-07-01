@@ -344,8 +344,7 @@ class MauMauState extends State<MauMau> {
                         ),
                         IconButton(
                           icon: Icon(Icons.clear),
-                          //onPressed: () => Navigator.pop(context),
-                          onPressed: () => _winnerDialog(0),
+                          onPressed: () => Navigator.pop(context),
                         ),
                       ],
                     ),
