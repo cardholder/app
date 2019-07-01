@@ -262,7 +262,7 @@ class LobbyState extends State<Lobby> {
                   ),
                 ],
               ),
-              startButton,
+              startButton, //TODO ausblenden bei unter 2 spielern
             ],
           );
         },
