@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:cardholder/types/constants.dart';
+import 'package:flutter_alert/flutter_alert.dart';
 
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
@@ -220,21 +221,23 @@ class MauMauState extends State<MauMau> {
         return Center(
           child: Material(
             color: Colors.transparent,
-            child: Container(
-              width: 300,
-              height: 150,
-              color: Colors.white,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Icon(icon, size: 45),
-                    Text(text),
-                    Button(
-                      onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false),
-                      title: 'Weiter',
-                    ),
-                  ],
+            child: Card(
+              child: Container(
+                width: 300,
+                height: 150,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(icon, size: 45),
+                      Text(text),
+                      Button(
+                        onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (Route<dynamic> route) => false),
+                        title: 'Weiter',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -344,7 +347,24 @@ class MauMauState extends State<MauMau> {
                         ),
                         IconButton(
                           icon: Icon(Icons.clear),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => showAlert(
+                                context: context,
+                                title: 'Das Spiel verlassen?',
+                                actions: [
+                                  AlertAction(
+                                    text: 'Ja',
+                                    isDestructiveAction: true,
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  AlertAction(
+                                    text: 'Nein',
+                                    onPressed: null,
+                                    automaticallyPopNavigation: true,
+                                  ),
+                                ],
+                              ),
                         ),
                       ],
                     ),
