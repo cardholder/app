@@ -1,13 +1,14 @@
 import 'dart:convert';
-
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/types/player.dart';
+import 'package:cardholder/widgets/button.dart';
 import 'package:cardholder/widgets/playericon.dart';
 import 'package:cardholder/widgets/playingcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:cardholder/types/constants.dart';
+import 'package:flutter_alert/flutter_alert.dart';
 
 class MauMau extends StatefulWidget {
   final Lobby _lobby;
@@ -28,7 +29,7 @@ class MauMauState extends State<MauMau> {
   Color bottomAccentColor = Colors.grey;
   List<PlayingCard> hand = List();
   List<PlayingCard> stack = [PlayingCard(id: null)];
-  List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
+  List<PlayingCard> pile = List();
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _subscribeGameChannel() async {
-    channel.sink.add(jsonEncode({'player_id': widget._lobby.players[0].id}));
+    channel.sink.add(jsonEncode({'player_id': widget._myId}));
     channel.stream.listen((message) {
       Map<String, dynamic> response = jsonDecode(message);
       if (response['players'] != null) {
@@ -115,7 +116,7 @@ class MauMauState extends State<MauMau> {
   Future _setRemainingCards(Map response) async {
     setState(() {
       stack = [
-        for (int i = 0; i < response['remaining_cards']; i++)
+        for (int i = 0; i < response['remaining_cards'] + 1; i++)
           PlayingCard(id: null)
       ];
     });
@@ -203,18 +204,44 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _winnerDialog(int playerId) async {
+    var icon, text;
+
+    if (playerId == widget._myId) {
+      icon = Icons.cake;
+      text = 'Du hast gewonnen';
+    } else {
+      icon = Icons.sentiment_dissatisfied;
+      text = 'Du hast verloren';
+    }
+
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('Sieger: $playerId'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text('Zurück zur Lobby'),
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/lobby'),
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Card(
+              child: Container(
+                width: 300,
+                height: 150,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(icon, size: 45),
+                      Text(text),
+                      Button(
+                        onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (Route<dynamic> route) => false),
+                        title: 'Weiter',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -222,108 +249,133 @@ class MauMauState extends State<MauMau> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          height: 180,
-          width: MediaQuery.of(context).size.width,
-          child: Row(
+    Widget body;
+
+    if (pile.length == 0) {
+      body = Center(
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    } else {
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            height: 180,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ...widget._lobby.players?.map((player) {
+                  return PlayerIcon(player, (player?.id == currentPlayer?.id));
+                }),
+              ],
+            ),
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              ...widget._lobby.players?.map((player) {
-                return PlayerIcon(player, (player?.id == currentPlayer?.id));
-              }),
+              Stack(
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  ...stack,
+                  if (nextSymbol != null) ...{
+                    Positioned(
+                      left: 260,
+                      top: 0,
+                      child: Text(symbols[nextSymbol]),
+                    )
+                  }
+                ],
+              ),
+              DragTarget(
+                builder:
+                    (context, List<PlayingCard> candidateData, rejectedData) {
+                  return Stack(children: pile);
+                },
+                onWillAccept: (data) {
+                  return hand.contains(data);
+                },
+                onAccept: (PlayingCard data) {
+                  _putCardOnPile(data);
+                  setState(() {});
+                },
+              ),
             ],
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                ...stack,
-                if (nextSymbol != null) ...{
-                  Positioned(
-                    left: 260,
-                    top: 0,
-                    child: Text(symbols[nextSymbol]),
-                  )
-                }
-              ],
-            ),
-            DragTarget(
-              builder:
-                  (context, List<PlayingCard> candidateData, rejectedData) {
-                return Stack(children: pile);
-              },
-              onWillAccept: (data) {
-                return hand.contains(data);
-              },
-              onAccept: (PlayingCard data) {
-                _putCardOnPile(data);
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                DragTarget(
-                  builder:
-                      (context, List<PlayingCard> candidateData, rejectedData) {
-                    return Container(
-                      height: 135,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(
-                        children: hand
-                                ?.map(
-                                  (f) => Positioned(
-                                      left: hand.indexOf(f) *
-                                          (MediaQuery.of(context).size.width /
-                                              hand.length),
-                                      child: f),
-                                )
-                                ?.toList() ??
-                            [],
-                      ),
-                    );
-                  },
-                  onWillAccept: (PlayingCard data) {
-                    return !hand.contains(data);
-                  },
-                  onAccept: (PlayingCard data) {
-                    _pickCardFromStack(data);
-                  },
-                ),
-                Container(
-                  height: 35,
-                  width: MediaQuery.of(context).size.width,
-                  color: bottomAccentColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text(me?.name ?? ''),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () =>
-                            Navigator.pushReplacementNamed(context, '/lobby'),
-                      )
-                    ],
+          Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  DragTarget(
+                    builder: (context, List<PlayingCard> candidateData,
+                        rejectedData) {
+                      return Container(
+                        height: 135,
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: hand
+                                  ?.map(
+                                    (f) => Positioned(
+                                        left: hand.indexOf(f) *
+                                            (MediaQuery.of(context).size.width /
+                                                hand.length),
+                                        child: f),
+                                  )
+                                  ?.toList() ??
+                              [],
+                        ),
+                      );
+                    },
+                    onWillAccept: (PlayingCard data) {
+                      return !hand.contains(data);
+                    },
+                    onAccept: (PlayingCard data) {
+                      _pickCardFromStack(data);
+                    },
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
+                  Container(
+                    height: 35,
+                    width: MediaQuery.of(context).size.width,
+                    color: bottomAccentColor,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(me?.name ?? ''),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () => showAlert(
+                                context: context,
+                                title: 'Das Spiel verlassen?',
+                                actions: [
+                                  AlertAction(
+                                    text: 'Ja',
+                                    isDestructiveAction: true,
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  AlertAction(
+                                    text: 'Nein',
+                                    onPressed: null,
+                                    automaticallyPopNavigation: true,
+                                  ),
+                                ],
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    return body;
   }
 }

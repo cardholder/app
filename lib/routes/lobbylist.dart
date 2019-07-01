@@ -41,11 +41,16 @@ class LobbyListState extends State<LobbyList> {
   Future _subscribeLobbyList() async {
     channel.stream.listen((message) {
       Map<String, dynamic> response = jsonDecode(message);
+
       if (response['lobbies'] != null) {
         _setLobbies(response);
-      } else if (response['lobby'] != null) {
+      }
+
+      if (response['lobby'] != null) {
         _updateLobby(response);
-      } else if (response['lobby_id'] != null) {
+      }
+
+      if (response['lobby_id'] != null) {
         _removeLobby(response['lobby_id']);
       }
     });
