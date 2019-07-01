@@ -44,7 +44,7 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _subscribeGameChannel() async {
-    channel.sink.add(jsonEncode({'player_id': widget._lobby.players[0].id}));
+    channel.sink.add(jsonEncode({'player_id': widget._myId}));
     channel.stream.listen((message) {
       Map<String, dynamic> response = jsonDecode(message);
       if (response['players'] != null) {
