@@ -130,7 +130,7 @@ class LobbyState extends State<Lobby> {
   @override
   Widget build(BuildContext context) {
     Widget startButton;
-    if (_leader?.id == _myId && _lobby.players.length > 2) {
+    if (_leader?.id == _myId && _lobby.players.length >= 2) {
       startButton = Column(
         children: <Widget>[
           Padding(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/types/player.dart';
+import 'package:cardholder/widgets/button.dart';
 import 'package:cardholder/widgets/playericon.dart';
 import 'package:cardholder/widgets/playingcard.dart';
 import 'package:flutter/material.dart';
@@ -202,17 +203,57 @@ class MauMauState extends State<MauMau> {
   }
 
   Future _winnerDialog(int playerId) async {
+    var icon, text;
+
+    if (playerId == widget._myId) {
+      icon = Icons.cake;
+      text = 'Du hast gewonnen';
+    } else {
+      icon = Icons.sentiment_dissatisfied;
+      text = 'Du hast verloren';
+    }
+
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('Sieger: $playerId'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text('Zurück zur Lobbyliste'),
-              onPressed: () => Navigator.pop(context),
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: 300,
+              height: 150,
+              color: Colors.white,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                      child: Stack(
+                        overflow: Overflow.visible,
+                        children: <Widget>[
+                          Positioned(
+                            top: -30,
+                            left: MediaQuery.of(context).size.width / 3,
+                            child: Transform.scale(
+                              scale: 4,
+                              child: Icon(icon),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Text(text),
+                    Button(
+                      onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false),
+                      title: 'Weiter',
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
+          ),
         );
       },
     );
