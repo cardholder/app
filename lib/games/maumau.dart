@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cardholder/types/lobby.dart';
 import 'package:cardholder/types/player.dart';
 import 'package:cardholder/widgets/playericon.dart';
@@ -28,7 +27,7 @@ class MauMauState extends State<MauMau> {
   Color bottomAccentColor = Colors.grey;
   List<PlayingCard> hand = List();
   List<PlayingCard> stack = [PlayingCard(id: null)];
-  List<PlayingCard> pile = [PlayingCard(id: null, draggable: false)];
+  List<PlayingCard> pile = List();
 
   @override
   void initState() {
@@ -115,7 +114,7 @@ class MauMauState extends State<MauMau> {
   Future _setRemainingCards(Map response) async {
     setState(() {
       stack = [
-        for (int i = 0; i < response['remaining_cards']; i++)
+        for (int i = 0; i < response['remaining_cards'] + 1; i++)
           PlayingCard(id: null)
       ];
     });
@@ -210,9 +209,8 @@ class MauMauState extends State<MauMau> {
           title: Text('Sieger: $playerId'),
           children: <Widget>[
             SimpleDialogOption(
-              child: Text('Zurück zur Lobby'),
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/lobby'),
+              child: Text('Zurück zur Lobbyliste'),
+              onPressed: () => Navigator.pop(context),
             ),
           ],
         );
@@ -222,108 +220,116 @@ class MauMauState extends State<MauMau> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          height: 180,
-          width: MediaQuery.of(context).size.width,
-          child: Row(
+    Widget body;
+
+    if (pile.length == 0) {
+      body = Center(
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    } else {
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            height: 180,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ...widget._lobby.players?.map((player) {
+                  return PlayerIcon(player, (player?.id == currentPlayer?.id));
+                }),
+              ],
+            ),
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              ...widget._lobby.players?.map((player) {
-                return PlayerIcon(player, (player?.id == currentPlayer?.id));
-              }),
+              Stack(
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  ...stack,
+                  if (nextSymbol != null) ...{
+                    Positioned(
+                      left: 260,
+                      top: 0,
+                      child: Text(symbols[nextSymbol]),
+                    )
+                  }
+                ],
+              ),
+              DragTarget(
+                builder:
+                    (context, List<PlayingCard> candidateData, rejectedData) {
+                  return Stack(children: pile);
+                },
+                onWillAccept: (data) {
+                  return hand.contains(data);
+                },
+                onAccept: (PlayingCard data) {
+                  _putCardOnPile(data);
+                  setState(() {});
+                },
+              ),
             ],
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                ...stack,
-                if (nextSymbol != null) ...{
-                  Positioned(
-                    left: 260,
-                    top: 0,
-                    child: Text(symbols[nextSymbol]),
-                  )
-                }
-              ],
-            ),
-            DragTarget(
-              builder:
-                  (context, List<PlayingCard> candidateData, rejectedData) {
-                return Stack(children: pile);
-              },
-              onWillAccept: (data) {
-                return hand.contains(data);
-              },
-              onAccept: (PlayingCard data) {
-                _putCardOnPile(data);
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                DragTarget(
-                  builder:
-                      (context, List<PlayingCard> candidateData, rejectedData) {
-                    return Container(
-                      height: 135,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(
-                        children: hand
-                                ?.map(
-                                  (f) => Positioned(
-                                      left: hand.indexOf(f) *
-                                          (MediaQuery.of(context).size.width /
-                                              hand.length),
-                                      child: f),
-                                )
-                                ?.toList() ??
-                            [],
-                      ),
-                    );
-                  },
-                  onWillAccept: (PlayingCard data) {
-                    return !hand.contains(data);
-                  },
-                  onAccept: (PlayingCard data) {
-                    _pickCardFromStack(data);
-                  },
-                ),
-                Container(
-                  height: 35,
-                  width: MediaQuery.of(context).size.width,
-                  color: bottomAccentColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text(me?.name ?? ''),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () =>
-                            Navigator.pushReplacementNamed(context, '/lobby'),
-                      )
-                    ],
+          Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  DragTarget(
+                    builder: (context, List<PlayingCard> candidateData,
+                        rejectedData) {
+                      return Container(
+                        height: 135,
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: hand
+                                  ?.map(
+                                    (f) => Positioned(
+                                        left: hand.indexOf(f) *
+                                            (MediaQuery.of(context).size.width /
+                                                hand.length),
+                                        child: f),
+                                  )
+                                  ?.toList() ??
+                              [],
+                        ),
+                      );
+                    },
+                    onWillAccept: (PlayingCard data) {
+                      return !hand.contains(data);
+                    },
+                    onAccept: (PlayingCard data) {
+                      _pickCardFromStack(data);
+                    },
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
+                  Container(
+                    height: 35,
+                    width: MediaQuery.of(context).size.width,
+                    color: bottomAccentColor,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(me?.name ?? ''),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    return body;
   }
 }

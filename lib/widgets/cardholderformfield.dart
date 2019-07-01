@@ -14,8 +14,6 @@ class CardholderFormField extends StatefulWidget {
   }
 }
 
-// TODO: ausgewähltes FormField kennzeichnen durch Farbe oder Animation
-
 class CardholderFormFieldState extends State<CardholderFormField> {
   String _selectedOption;
 

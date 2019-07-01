@@ -19,8 +19,11 @@ class Game extends StatelessWidget {
       default:
         Navigator.pop(context);
     }
-    return Scaffold(
-      body: selectedGame,
+    return WillPopScope(
+      onWillPop: () async {},
+      child: Scaffold(
+        body: selectedGame,
+      ),
     );
   }
 }

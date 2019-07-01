@@ -27,7 +27,7 @@ class LobbyState extends State<Lobby> {
   var channel;
   Type.Lobby _lobby;
   int _myId;
-  Player _leader;
+  Player _leader = Player(-1, null, null, null);
   Map<String, String> usernameJson = {'name': userData.username};
 
   @override
@@ -49,13 +49,16 @@ class LobbyState extends State<Lobby> {
     channel.sink.add(jsonEncode(usernameJson));
     channel.stream.listen((message) {
       Map<String, dynamic> response = jsonDecode(message);
+
       if (response['your_id'] != null) {
         _myId = response['your_id'];
-      } else if (response['players'] != null) {
+      }
+
+      if (response['players'] != null) {
         _setPlayers(response);
-      } else if (response['lobby'] != null) {
-        //TODO Lobbyinfos abrufen wenn join über Link
-      } else if (response['message'] != null) {
+      }
+
+      if (response['message'] != null) {
         _updateStatus(response);
       }
     });
@@ -64,11 +67,11 @@ class LobbyState extends State<Lobby> {
   void _setPlayers(Map response) {
     List list = response['players'] as List;
     if (list.length > 0) {
+      _lobby.players = list.map((f) => Player.fromJson(f)).toList();
       setState(() {
-        _lobby.players = list.map((f) => Player.fromJson(f)).toList();
+        _leader =
+            (_lobby.players.firstWhere((player) => player.role == 'leader'));
       });
-      _leader =
-          (_lobby.players.firstWhere((player) => player.role == 'leader'));
     }
   }
 
@@ -127,7 +130,7 @@ class LobbyState extends State<Lobby> {
   @override
   Widget build(BuildContext context) {
     Widget startButton;
-    if (_leader?.id == _myId) {
+    if (_leader?.id == _myId && _lobby.players.length > 2) {
       startButton = Column(
         children: <Widget>[
           Padding(
@@ -251,18 +254,19 @@ class LobbyState extends State<Lobby> {
                             ],
                           ),
                           ..._lobby.players?.map((player) => PlayerEntry(
-                                player,
-                                _myId,
-                                _leader?.id,
-                                _kickPlayer,
-                              )),
+                                    player,
+                                    _myId,
+                                    _leader?.id,
+                                    _kickPlayer,
+                                  )) ??
+                              [],
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              startButton, //TODO ausblenden bei unter 2 spielern
+              startButton
             ],
           );
         },
